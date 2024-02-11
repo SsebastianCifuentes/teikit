@@ -4,6 +4,8 @@ import asyncio
 import RPi.GPIO as GPIO
 import time
 
+GPIO.cleanup() # Liberar los pines GPIO
+
 sio = socketio.AsyncClient()
 
 # Configuración de la biblioteca RPi.GPIO
