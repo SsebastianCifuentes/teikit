@@ -19,22 +19,14 @@ for pin in pines_relays:
 # Función principal
 async def main(page: ft.Page):
     await sio.connect('http://192.168.0.17:3030')  # Conecta al servidor socketio
-    await page.add_async(ft.Text(value= "Teikit", 
-                                         color= "orange", 
-                                         size= 30, 
-                                         bold= True, 
-                                         align= "center"))  
+    await page.add_async(ft.Text("Teikit"))  
     await page.add_async(ft.Text("Somos Teikit, un casillero inteligente para tus comidas favoritas!"))  
     await page.add_async(ft.Text("Recuerda que debes abrir la aplicación para hacer retiro de tu pedido."))  
 
     @sio.event
     async def abrir_pedido_casillero_cafeta(data):
         await page.clean_async()
-        await page.add_async(ft.Text(value= "Teikit", 
-                                         color= "orange", 
-                                         size= 30, 
-                                         bold= True, 
-                                         align= "center")) 
+        await page.add_async(ft.Text("Teikit")) 
 
         mensaje = ""
         if data is not None:
@@ -47,15 +39,8 @@ async def main(page: ft.Page):
             GPIO.output(pines_relays[seleccion - 1], GPIO.HIGH)
             
             await page.clean_async()
-            await page.add_async(ft.Text(value= "Teikit", 
-                                         color= "orange", 
-                                         size= 30, 
-                                         bold= True, 
-                                         align= "center"))
-            await page.add_async(ft.Text(value= "Gracias por entregar el pedido.",
-                                         color= "black",
-                                         size= 20,
-                                         align= "center"))
+            await page.add_async(ft.Text("Teikit"))
+            await page.add_async(ft.Text("Gracias por entregar el pedido."))
             
             # Definir la URL a la que deseas hacer la petición POST
             url = 'https://192.168.0.17:3030/' +data['id'] + '/estado'
@@ -79,11 +64,8 @@ async def main(page: ft.Page):
     @sio.event
     async def abrir_pedido_casillero_usuario(data):
         await page.clean_async()
-        await page.add_async(ft.Text(value= "Teikit", 
-                                         color= "orange", 
-                                         size= 30, 
-                                         bold= True, 
-                                         align= "center"))
+        await page.add_async(ft.Text("Teikit"))
+
         mensaje = ""
         if data is not None:
             mensaje = f"El pedido {data['id']} está listo para retirar y se encuentra en el casillero {data['id_casillero']}."
@@ -95,11 +77,7 @@ async def main(page: ft.Page):
             GPIO.output(pines_relays[seleccion - 1], GPIO.HIGH)
             
             await page.clean_async()
-            await page.add_async(ft.Text(value= "Teikit",
-                                         color= "orange", 
-                                         size= 30, 
-                                         bold= True,
-                                         align= "center"))
+            await page.add_async(ft.Text("Teikit"))
             await page.add_async(ft.Text("Gracias por hacer tu pedido con nosotros."))
             await page.add_async(ft.Text("Recuerda seguirnos en redes sociales!"))
             import requests
@@ -128,7 +106,7 @@ async def desconectar():
     await sio.disconnect()
 
 # Inicia la aplicación con la función principal
-ft.app(main)
+ft.app(target=main)
 
 # Ejecuta la función de desconexión
 asyncio.run(desconectar())
