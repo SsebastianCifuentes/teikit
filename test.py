@@ -43,13 +43,13 @@ async def main(page: ft.Page):
             await page.add_async(ft.Text("Gracias por entregar el pedido."))
             
             # Definir la URL a la que deseas hacer la petición POST
-            url = 'https://192.168.0.17:3030/pedido/' +data['id'] + '/estado'
+            url = 'http://192.168.0.17:3030/pedido/' + '682f157e9220' + '/estado'
 
             # Definir los datos que deseas enviar en el cuerpo de la petición
-            datos = {'nuevoEstado': 'Entregado'}
+            datos = {"nuevoEstado": "Entregado"}
 
             # Realizar la petición POST
-            respuesta = requests.post(url, data=datos)
+            respuesta = requests.post(url, json=datos)
 
             # Verificar el estado de la respuesta
             if respuesta.status_code == 200:
@@ -83,13 +83,13 @@ async def main(page: ft.Page):
             import requests
 
             # Definir la URL a la que deseas hacer la petición POST
-            url = 'https://192.168.0.17:3030/pedido/' +data['id'] + '/estado'
+            url = 'http://192.168.0.17:3030/pedido/' + '682f157e9220' + '/estado'
 
             # Definir los datos que deseas enviar en el cuerpo de la petición
-            datos = {'nuevoEstado': 'Retirado'}
+            datos = {"nuevoEstado": "Retirado"}
 
             # Realizar la petición POST
-            respuesta = requests.post(url, data=datos)
+            respuesta = requests.post(url, json=datos)
 
             # Verificar el estado de la respuesta
             if respuesta.status_code == 200:

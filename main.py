@@ -2,6 +2,7 @@ import socketio
 import flet as ft
 import asyncio
 import RPi.GPIO as GPIO
+import requests
 import time
 
 GPIO.cleanup() # Liberar los pines GPIO
