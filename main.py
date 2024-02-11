@@ -42,12 +42,7 @@ async def main(page: ft.Page):
                 print("ID de casillero no válido. Debe ser un número entre 1 y 16.")
 
         await page.add_async(ft.Text(mensaje))
-
-        # Busca el casillero y lo abre
-        # for pedido in data:
-        # await page.add_async(ft.Text(data))
-    # await sio.disconnect()
-
+        
 async def desconectar():
     await sio.disconnect()
 
