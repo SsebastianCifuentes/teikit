@@ -43,7 +43,7 @@ async def main(page: ft.Page):
             await page.add_async(ft.Text("Gracias por entregar el pedido."))
             
             # Definir la URL a la que deseas hacer la petición POST
-            url = 'https://192.168.0.17:3030/pedido' +data['id'] + '/estado'
+            url = 'https://192.168.0.17:3030/pedido/' +data['id'] + '/estado'
 
             # Definir los datos que deseas enviar en el cuerpo de la petición
             datos = {'nuevoEstado': 'Entregado'}
@@ -83,7 +83,7 @@ async def main(page: ft.Page):
             import requests
 
             # Definir la URL a la que deseas hacer la petición POST
-            url = 'https://192.168.0.17:3030/pedido' +data['id'] + '/estado'
+            url = 'https://192.168.0.17:3030/pedido/' +data['id'] + '/estado'
 
             # Definir los datos que deseas enviar en el cuerpo de la petición
             datos = {'nuevoEstado': 'Retirado'}
