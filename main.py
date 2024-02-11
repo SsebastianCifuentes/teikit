@@ -29,6 +29,7 @@ async def main(page: ft.Page):
                 El pedido {data['id']} ha sido abierto 
                 En el casillero {data['id_casillero']}
             """
+            await page.add_async(ft.Text(mensaje))
         # Abre el casillero
             try:
                 seleccion = int(data['id_casillero'])
@@ -43,7 +44,7 @@ async def main(page: ft.Page):
             except ValueError:
                 print("ID de casillero no válido. Debe ser un número entre 1 y 16.")
 
-        await page.add_async(ft.Text(mensaje))
+        
         
 async def desconectar():
     await sio.disconnect()
