@@ -2,6 +2,7 @@ import socketio  # Importa la librería para la comunicación mediante sockets
 import flet as ft  # Importa la librería para la interfaz de usuario
 import asyncio  # Importa la librería para operaciones asíncronas
 import RPi.GPIO as GPIO  # Importa la librería para el control de pines GPIO del Raspberry Pi
+import requests
 import time  # Importa la librería para operaciones de tiempo
 
 GPIO.cleanup()  # Limpia los pines GPIO para evitar interferencias
@@ -18,16 +19,71 @@ for pin in pines_relays:
 # Función principal
 async def main(page: ft.Page):
     await sio.connect('http://192.168.0.17:3030')  # Conecta al servidor socketio
-    await page.add_async(ft.Text("Teikit"))  
+    await page.add_async(ft.Text(value= "Teikit", 
+                                         color= "orange", 
+                                         size= 30, 
+                                         bold= True, 
+                                         align= "center"))  
     await page.add_async(ft.Text("Somos Teikit, un casillero inteligente para tus comidas favoritas!"))  
     await page.add_async(ft.Text("Recuerda que debes abrir la aplicación para hacer retiro de tu pedido."))  
 
-    # Maneja el evento de apertura de casillero
     @sio.event
-    async def abrir_pedido_casillero(data):
+    async def abrir_pedido_casillero_cafeta(data):
         await page.clean_async()
-        await page.add_async(ft.Text("Teikit"))  
+        await page.add_async(ft.Text(value= "Teikit", 
+                                         color= "orange", 
+                                         size= 30, 
+                                         bold= True, 
+                                         align= "center")) 
 
+        mensaje = ""
+        if data is not None:
+            mensaje = f"El pedido {data['id']} debe ser entregado en el casillero {data['id_casillero']}."
+            await page.add_async(ft.Text(mensaje))
+
+            seleccion = int(data['id_casillero'])
+            GPIO.output(pines_relays[seleccion - 1], GPIO.LOW)
+            await asyncio.sleep(8)
+            GPIO.output(pines_relays[seleccion - 1], GPIO.HIGH)
+            
+            await page.clean_async()
+            await page.add_async(ft.Text(value= "Teikit", 
+                                         color= "orange", 
+                                         size= 30, 
+                                         bold= True, 
+                                         align= "center"))
+            await page.add_async(ft.Text(value= "Gracias por entregar el pedido.",
+                                         color= "black",
+                                         size= 20,
+                                         align= "center"))
+            
+            # Definir la URL a la que deseas hacer la petición POST
+            url = 'https://192.168.0.17:3030/' +data['id'] + '/estado'
+
+            # Definir los datos que deseas enviar en el cuerpo de la petición
+            datos = {'nuevoEstado': 'Entregado'}
+
+            # Realizar la petición POST
+            respuesta = requests.post(url, data=datos)
+
+            # Verificar el estado de la respuesta
+            if respuesta.status_code == 200:
+                print("Petición exitosa!")
+                print("Respuesta del servidor:")
+                print(respuesta.text)
+            else:
+                print("Error en la petición. Código de estado:", respuesta.status_code)
+            await asyncio.sleep(30)  # Espera 30 segundos
+
+
+    @sio.event
+    async def abrir_pedido_casillero_usuario(data):
+        await page.clean_async()
+        await page.add_async(ft.Text(value= "Teikit", 
+                                         color= "orange", 
+                                         size= 30, 
+                                         bold= True, 
+                                         align= "center"))
         mensaje = ""
         if data is not None:
             mensaje = f"El pedido {data['id']} está listo para retirar y se encuentra en el casillero {data['id_casillero']}."
@@ -39,9 +95,32 @@ async def main(page: ft.Page):
             GPIO.output(pines_relays[seleccion - 1], GPIO.HIGH)
             
             await page.clean_async()
-            await page.add_async(ft.Text("Teikit"))
-            await page.add_async(ft.Text("Gracias por hacer tu pedido."))
+            await page.add_async(ft.Text(value= "Teikit",
+                                         color= "orange", 
+                                         size= 30, 
+                                         bold= True,
+                                         align= "center"))
+            await page.add_async(ft.Text("Gracias por hacer tu pedido con nosotros."))
             await page.add_async(ft.Text("Recuerda seguirnos en redes sociales!"))
+            import requests
+
+            # Definir la URL a la que deseas hacer la petición POST
+            url = 'https://192.168.0.17:3030/' +data['id'] + '/estado'
+
+            # Definir los datos que deseas enviar en el cuerpo de la petición
+            datos = {'nuevoEstado': 'Retirado'}
+
+            # Realizar la petición POST
+            respuesta = requests.post(url, data=datos)
+
+            # Verificar el estado de la respuesta
+            if respuesta.status_code == 200:
+                print("Petición exitosa!")
+                print("Respuesta del servidor:")
+                print(respuesta.text)
+            else:
+                print("Error en la petición. Código de estado:", respuesta.status_code)
+
             await asyncio.sleep(30)  # Espera 30 segundos
 
 # Función para desconectar del servidor socketio

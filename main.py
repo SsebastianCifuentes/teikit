@@ -20,7 +20,7 @@ async def main(page: ft.Page):
     await page.add_async(ft.Text("Esperando que un casillero se abra..."))
 
     @sio.event
-    async def abrir_pedido_casillero(data):
+    async def abrir_pedido_casillero_cafeta(data):
         await page.clean_async()
         
         mensaje = ""
@@ -43,6 +43,10 @@ async def main(page: ft.Page):
                     print("ID de casillero no válido. Seleccione un número entre 1 y 16.")
             except ValueError:
                 print("ID de casillero no válido. Debe ser un número entre 1 y 16.")
+
+        @sio.event
+        async def abrir_pedido_casillero_usuario(data):
+            pass
 
         
         
