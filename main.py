@@ -44,9 +44,8 @@ async def main(page: ft.Page):
             except ValueError:
                 print("ID de casillero no válido. Debe ser un número entre 1 y 16.")
 
-        @sio.event
-        async def abrir_pedido_casillero_usuario(data):
-            pass
+    # @sio.event
+    # async def abrir_pedido_casillero_usuario(data):            pass
 
         
         
