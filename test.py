@@ -18,8 +18,8 @@ for pin in pines_relays:
 
 # Función principal
 async def main(page: ft.Page):
-    await sio.connect('http://192.168.0.17:3030')  # Conecta al servidor socketio
-    await page.add_async(ft.Text("Teikit"))  
+    await sio.connect('https://brainlinkspa.zapto.org/api/')  # Conecta al servidor socketio
+    await page.add_async(ft.Text("Teikit"))
     await page.add_async(ft.Text("Somos Teikit, un casillero inteligente para tus comidas favoritas!"))  
     await page.add_async(ft.Text("Recuerda que debes abrir la aplicación para hacer retiro de tu pedido."))  
 
@@ -43,7 +43,7 @@ async def main(page: ft.Page):
             await page.add_async(ft.Text("Gracias por entregar el pedido."))
             
             # Definir la URL a la que deseas hacer la petición POST
-            url = 'http://192.168.0.17:3030/pedido/' + '682f157e9220' + '/estado'
+            url = 'https://brainlinkspa.zapto.org/api//pedido/' + '682f157e9220' + '/estado'
 
             # Definir los datos que deseas enviar en el cuerpo de la petición
             datos = {"nuevoEstado": "Entregado"}
@@ -59,7 +59,6 @@ async def main(page: ft.Page):
             else:
                 print("Error en la petición. Código de estado:", respuesta.status_code)
             await asyncio.sleep(30)  # Espera 30 segundos
-
 
     @sio.event
     async def abrir_pedido_casillero_usuario(data):
@@ -83,7 +82,7 @@ async def main(page: ft.Page):
             import requests
 
             # Definir la URL a la que deseas hacer la petición POST
-            url = 'http://192.168.0.17:3030/pedido/' + '682f157e9220' + '/estado'
+            url = 'https://brainlinkspa.zapto.org/api/pedido/' + '682f157e9220' + '/estado'
 
             # Definir los datos que deseas enviar en el cuerpo de la petición
             datos = {"nuevoEstado": "Retirado"}
