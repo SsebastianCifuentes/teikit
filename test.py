@@ -43,7 +43,7 @@ async def main(page: ft.Page):
             await page.add_async(ft.Text("Gracias por entregar el pedido."))
             
             # Definir la URL a la que deseas hacer la petición POST
-            url = 'https://brainlinkspa.zapto.org/api/pedidos/' + '8990d0835cfe' + '/nuevoestado'
+            url = 'https://brainlinkspa.zapto.org/api/pedidos/' + data['id'] + '/nuevoestado'
 
             # Definir los datos que deseas enviar en el cuerpo de la petición
             datos = {"nuevoEstado": "Entregado"}
@@ -82,7 +82,7 @@ async def main(page: ft.Page):
             import requests
 
             # Definir la URL a la que deseas hacer la petición POST
-            url = 'https://brainlinkspa.zapto.org/api/pedidos/' + '8990d0835cfe' + '/nuevoestado'
+            url = 'https://brainlinkspa.zapto.org/api/pedidos/' + data['id'] + '/nuevoestado'
 
             # Definir los datos que deseas enviar en el cuerpo de la petición
             datos = {"nuevoEstado": "Retirado"}
