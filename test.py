@@ -24,6 +24,23 @@ async def main(page: ft.Page):
     await page.add_async(ft.Text("Recuerda que debes abrir la aplicación para hacer retiro de tu pedido."))  
 
     @sio.event
+    async def abrir_todos_casilleros():
+        await page.clean_async()
+        await page.add_async(ft.Text("Teikit"))
+        await page.add_async(ft.Text("Abriendo todos los casilleros..."))
+
+        for pin in pines_relays:
+            GPIO.output(pin, GPIO.LOW)
+        await asyncio.sleep(8)
+
+        for pin in pines_relays:
+            GPIO.output(pin, GPIO.HIGH)
+        await page.clean_async()
+        await page.add_async(ft.Text("Teikit"))
+        await page.add_async(ft.Text("Todos los casilleros han sido cerrados."))
+
+
+    @sio.event
     async def abrir_pedido_casillero_cafeta(data):
         await page.clean_async()
         await page.add_async(ft.Text("Teikit")) 
