@@ -30,7 +30,7 @@ async def main(page: ft.Page):
         await page.add_async(ft.Text("Abriendo casillero..."))
         print(data)
 
-        seleccion = data - 1
+        seleccion = 0
         GPIO.output(pines_relays[seleccion - 1], GPIO.LOW)
         await asyncio.sleep(8)
         GPIO.output(pines_relays[seleccion - 1], GPIO.HIGH)
