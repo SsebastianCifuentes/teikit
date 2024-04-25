@@ -28,9 +28,10 @@ async def main(page: ft.Page):
         await page.clean_async()
         await page.add_async(ft.Text("Teikit"))
         await page.add_async(ft.Text("Abriendo casillero..."))
-        print(data)
+        
 
         seleccion = 0
+        print("la seleccion es: ", seleccion)
         GPIO.output(pines_relays[seleccion - 1], GPIO.LOW)
         await asyncio.sleep(8)
         GPIO.output(pines_relays[seleccion - 1], GPIO.HIGH)
