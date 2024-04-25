@@ -11,7 +11,7 @@ sio = socketio.AsyncClient(ssl_verify=False)
 
 # # Configuración de los pines GPIO del Raspberry Pi
 GPIO.setmode(GPIO.BOARD)  # Configura los pines GPIO en modo BOARD
-pines_relays = [3, 16, 5, 12, 7, 11, 8, 10, 15, 18, 19, 21, 22, 24, 26, 32]  # Lista de pines de los relés
+pines_relays = [3,10,16,8,5,11,12,7, 15, 18, 19, 21, 22, 24, 26, 32]  # Lista de pines de los relés
 for pin in pines_relays:
     GPIO.setup(pin, GPIO.OUT)  # Configura el pin como salida
     GPIO.output(pin, GPIO.HIGH)  # Establece el pin en estado alto (Bajo para el modulo de relé)
