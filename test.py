@@ -18,7 +18,7 @@ for pin in pines_relays:
 
 # Función principal
 async def main(page: ft.Page):
-    await sio.connect('https://brainlinkspa.zapto.org', socketio_path='/api/socket.io/')
+    await sio.connect('https://brainlinkspa.hopto.org', socketio_path='/api/socket.io/')
     await page.add_async(ft.Text("Teikit"))
     await page.add_async(ft.Text("Somos Teikit, un casillero inteligente para tus comidas favoritas!"))  
     await page.add_async(ft.Text("Recuerda que debes abrir la aplicación para hacer retiro de tu pedido."))  
@@ -76,7 +76,7 @@ async def main(page: ft.Page):
             await page.add_async(ft.Text("Gracias por entregar el pedido."))
             
             # Definir la URL a la que deseas hacer la petición POST
-            url = 'https://brainlinkspa.zapto.org/api/pedidos/' + data['id'] + '/nuevoestado'
+            url = 'https://brainlinkspa.hopto.org/api/pedidos/' + data['id'] + '/nuevoestado'
 
             # Definir los datos que deseas enviar en el cuerpo de la petición
             datos = {"nuevoEstado": "Entregado"}
@@ -115,7 +115,7 @@ async def main(page: ft.Page):
             import requests
 
             # Definir la URL a la que deseas hacer la petición POST
-            url = 'https://brainlinkspa.zapto.org/api/pedidos/' + data['id'] + '/nuevoestado'
+            url = 'https://brainlinkspa.hopto.org/api/pedidos/' + data['id'] + '/nuevoestado'
 
             # Definir los datos que deseas enviar en el cuerpo de la petición
             datos = {"nuevoEstado": "Retirado"}
