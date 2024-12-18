@@ -6,8 +6,11 @@ relay_pins = [16, 11, 12, 7, 10, 5, 8, 3, 26, 21, 24, 19, 22, 15, 18, 13]
 
 # Función para alternar el estado de un relé
 def toggle_relay(relay_pin, button, status_label):
+    # Cambiar el estado del relé
     GPIO.output(relay_pin, not GPIO.input(relay_pin))
+    # Actualizar el estado visual
     update_status(relay_pin, status_label)
+    # Cambiar el color del botón
     update_button_color(relay_pin, button)
 
 # Función para actualizar el color del botón según el estado del relé
@@ -15,7 +18,7 @@ def update_button_color(relay_pin, button):
     if GPIO.input(relay_pin) == GPIO.HIGH:
         button.config(bg="green")  # Verde cuando está activado
     else:
-        button.config(bg="gray")  # Gris cuando está desactivado
+        button.config(bg="SystemButtonFace")  # Gris cuando está desactivado (gris predeterminado)
 
 # Configuración inicial de los pines GPIO
 def setup_gpio():
