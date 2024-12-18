@@ -26,7 +26,7 @@ def create_button(relay_pin, root, status_label, relay_index):
 
 # Función para actualizar el estado del relé en la interfaz gráfica
 def update_status(relay_pin, status_label):
-    status = "ON" if GPIO.input(relay_pin) == GPIO.LOW else "OFF"
+    status = "ON" if GPIO.input(relay_pin) == GPIO.HIGH else "OFF"
     status_label.config(text=f"Relay {relay_pins.index(relay_pin) + 1}: {status}")
 
 # Función para limpiar los recursos al cerrar la ventana
