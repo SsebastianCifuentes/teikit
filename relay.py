@@ -11,7 +11,7 @@ try:
     # Configuración de los pines GPIO como salidas
     for pin in pines_relays:
         GPIO.setup(pin, GPIO.OUT)
-        GPIO.output(pin, GPIO.LOW)
+        GPIO.output(pin, GPIO.HIGH)
 
     while True:
         print("Seleccione un relé (1-16) o presione 'q' para salir:")
