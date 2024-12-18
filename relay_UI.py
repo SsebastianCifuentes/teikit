@@ -36,7 +36,7 @@ def main():
     try:
         global root
         root = tk.Tk()
-        root.title("Relay UI - Teikit")
+        root.title("Relé UI - Teikit")  # Cambié el título
         root.geometry("1000x600")
         root.protocol("WM_DELETE_WINDOW", on_closing)
 
@@ -56,7 +56,7 @@ def main():
         # Crea botones para cada relé, empezando desde la segunda fila
         for i in range(len(relay_pins)):
             row, col = (i // 4) + 1, i % 4  # +1 para dejar espacio para la etiqueta de estado
-            button = tk.Button(root, text=f"Relay {i + 1}", font=("Helvetica", 30), command=lambda p=i: toggle_relay(relay_pins[p], status_label))
+            button = tk.Button(root, text=f"Relé {i + 1}", font=("Helvetica", 30), command=lambda p=i: toggle_relay(relay_pins[p], status_label))
             button.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")
 
             update_status(relay_pins[i], status_label)
