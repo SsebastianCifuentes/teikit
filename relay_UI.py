@@ -17,7 +17,7 @@ def setup_gpio():
 
 # Función para crear un botón con comportamiento adaptable
 def create_button(relay_pin, root, status_label):
-    button = tk.Button(root, text=f"Relay {relay_pin + 1}", font=("Helvetica", 20), command=lambda p=relay_pin: toggle_relay(relay_pins[p], status_label))
+    button = tk.Button(root, text=f"Relay {relay_pin + 1}", font=("Helvetica", 30), command=lambda p=relay_pin: toggle_relay(relay_pins[p], status_label))
     row, col = relay_pin // 4, relay_pin % 4
     button.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")  # Configura sticky para que el botón se expanda
 
@@ -43,18 +43,21 @@ def main():
         setup_gpio()
 
         # Configura pesos de las filas y columnas
-        for i in range(len(relay_pins) // 4 + 1):
+        for i in range(len(relay_pins) // 4 + 2):  # +2 para incluir la fila de la etiqueta de estado
             root.grid_rowconfigure(i, weight=1)
         for j in range(4):  # Máximo 4 columnas
             root.grid_columnconfigure(j, weight=1)
 
-        # Etiqueta de estado
+        # Etiqueta de estado en la primera fila
         status_label = tk.Label(root, text="", font=("Helvetica", 30))
-        status_label.grid(row=len(relay_pins) // 4 + 1, columnspan=4, sticky="ew")
+        status_label.grid(row=0, columnspan=4, sticky="ew")
 
-        # Crea botones para cada relé
+        # Crea botones para cada relé, empezando desde la segunda fila
         for i in range(len(relay_pins)):
-            create_button(i, root, status_label)
+            row, col = (i // 4) + 1, i % 4  # +1 para dejar espacio para la etiqueta de estado
+            button = tk.Button(root, text=f"Relay {i + 1}", font=("Helvetica", 30), command=lambda p=i: toggle_relay(relay_pins[p], status_label))
+            button.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")
+
             update_status(relay_pins[i], status_label)
 
         root.mainloop()
@@ -62,6 +65,6 @@ def main():
         print(f"Error: {e}")
     finally:
         GPIO.cleanup()
-
+        
 if __name__ == "__main__":
     main()
