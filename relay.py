@@ -1,3 +1,7 @@
+# Algoritmo de prueba de los relés mediante consola
+# Se definen los relé como LOW, y cuando son seleccionados se activan 3 segundos y se desactivan
+# Desconozco si el modulo que posee el casillero funciona inversamente, por eso aclaro que hace este codigo
+
 import RPi.GPIO as GPIO
 import time
 
