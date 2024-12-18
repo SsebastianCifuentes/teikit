@@ -16,14 +16,18 @@ def setup_gpio():
         GPIO.output(pin, GPIO.LOW)
 
 # Función para crear un botón en la interfaz gráfica para cada relé
-def create_button(relay_pin, root, status_label):
-    button = tk.Button(root, text=f"Relay {relay_pin + 1}", command=lambda p=relay_pin: toggle_relay(relay_pins[p], status_label))
-    button.grid(row=relay_pin // 4, column=relay_pin % 4, padx=10, pady=10)
+def create_button(relay_pin, root, status_label, relay_index):
+    button = tk.Button(
+        root, 
+        text=f"Relay {relay_index + 1}", 
+        command=lambda p=relay_pin: toggle_relay(p, status_label)
+    )
+    button.grid(row=relay_index // 4, column=relay_index % 4, padx=10, pady=10)
 
 # Función para actualizar el estado del relé en la interfaz gráfica
 def update_status(relay_pin, status_label):
     status = "ON" if GPIO.input(relay_pin) == GPIO.LOW else "OFF"
-    status_label.config(text=f"Relay {relay_pin + 1}: {status}")
+    status_label.config(text=f"Relay {relay_pins.index(relay_pin) + 1}: {status}")
 
 # Función para limpiar los recursos al cerrar la ventana
 def on_closing():
@@ -47,9 +51,9 @@ def main():
         status_label.grid(row=len(relay_pins) // 4, columnspan=4)
 
         # Crea los botones para cada relé y actualiza su estado
-        for i in range(len(relay_pins)):
-            create_button(i, root, status_label)
-            update_status(relay_pins[i], status_label)
+        for i, relay_pin in enumerate(relay_pins):
+            create_button(relay_pin, root, status_label, i)
+            update_status(relay_pin, status_label)
 
         root.mainloop()
     except Exception as e:
