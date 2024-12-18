@@ -17,14 +17,14 @@ def setup_gpio():
 
 # Función para crear un botón con comportamiento adaptable
 def create_button(relay_pin, root, status_label):
-    button = tk.Button(root, text=f"Relay {relay_pin + 1}", font=("Helvetica", 30), command=lambda p=relay_pin: toggle_relay(relay_pins[p], status_label))
+    button = tk.Button(root, text=f"Relé {relay_pin + 1}", font=("Helvetica", 30), command=lambda p=relay_pin: toggle_relay(relay_pins[p], status_label))
     row, col = relay_pin // 4, relay_pin % 4
     button.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")  # Configura sticky para que el botón se expanda
 
 # Función para actualizar el estado del relé
 def update_status(relay_pin, status_label):
-    status = "ON" if GPIO.input(relay_pin) == GPIO.HIGH else "OFF"
-    status_label.config(text=f"Relay {relay_pins.index(relay_pin) + 1}: {status}")
+    status = "ACTIVADO" if GPIO.input(relay_pin) == GPIO.HIGH else "DESACTIVADO"
+    status_label.config(text=f"Relé {relay_pins.index(relay_pin) + 1}: {status}")
 
 # Función para liberar los recursos al cerrar la ventana
 def on_closing():
@@ -40,6 +40,7 @@ def main():
         root.geometry("1800x900")
         root.protocol("WM_DELETE_WINDOW", on_closing)
 
+        root.bind("<Escape>", lambda event: on_closing())
         setup_gpio()
 
         # Configura pesos de las filas y columnas
@@ -65,6 +66,6 @@ def main():
         print(f"Error: {e}")
     finally:
         GPIO.cleanup()
-        
+
 if __name__ == "__main__":
     main()
