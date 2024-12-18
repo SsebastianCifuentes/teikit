@@ -37,7 +37,7 @@ def main():
         global root
         root = tk.Tk()
         root.title("Relay UI - Teikit")
-        root.geometry("1240x720")
+        root.geometry("1920x1080")
         root.protocol("WM_DELETE_WINDOW", on_closing)
 
         setup_gpio()
