@@ -5,9 +5,17 @@ GPIO.setmode(GPIO.BOARD)
 relay_pins = [16, 11, 12, 7, 10, 5, 8, 3, 26, 21, 24, 19, 22, 15, 18, 13]
 
 # Función para alternar el estado de un relé
-def toggle_relay(relay_pin, status_label):
+def toggle_relay(relay_pin, button, status_label):
     GPIO.output(relay_pin, not GPIO.input(relay_pin))
     update_status(relay_pin, status_label)
+    update_button_color(relay_pin, button)
+
+# Función para actualizar el color del botón según el estado del relé
+def update_button_color(relay_pin, button):
+    if GPIO.input(relay_pin) == GPIO.HIGH:
+        button.config(bg="green")  # Verde cuando está activado
+    else:
+        button.config(bg="gray")  # Gris cuando está desactivado
 
 # Configuración inicial de los pines GPIO
 def setup_gpio():
@@ -17,9 +25,10 @@ def setup_gpio():
 
 # Función para crear un botón con comportamiento adaptable
 def create_button(relay_pin, root, status_label):
-    button = tk.Button(root, text=f"Relé {relay_pin + 1}", font=("Helvetica", 30), command=lambda p=relay_pin: toggle_relay(relay_pins[p], status_label))
+    button = tk.Button(root, text=f"Relé {relay_pin + 1}", font=("Helvetica", 30), command=lambda p=relay_pin: toggle_relay(relay_pins[p], button, status_label))
     row, col = relay_pin // 4, relay_pin % 4
     button.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")  # Configura sticky para que el botón se expanda
+    update_button_color(relay_pin, button)  # Establece el color inicial del botón
 
 # Función para actualizar el estado del relé
 def update_status(relay_pin, status_label):
@@ -56,7 +65,7 @@ def main():
         # Crea botones para cada relé, empezando desde la segunda fila
         for i in range(len(relay_pins)):
             row, col = (i // 4) + 1, i % 4  # +1 para dejar espacio para la etiqueta de estado
-            button = tk.Button(root, text=f"Relé {i + 1}", font=("Helvetica", 30), command=lambda p=i: toggle_relay(relay_pins[p], status_label))
+            button = tk.Button(root, text=f"Relé {i + 1}", font=("Helvetica", 30), command=lambda p=i: toggle_relay(relay_pins[p], button, status_label))
             button.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")
 
             update_status(relay_pins[i], status_label)
