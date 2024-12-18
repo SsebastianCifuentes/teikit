@@ -37,7 +37,7 @@ def main():
         global root
         root = tk.Tk()
         root.title("Relay UI - Teikit")
-        root.geometry("1800x900")
+        root.geometry("900x500")
         root.protocol("WM_DELETE_WINDOW", on_closing)
 
         root.bind("<Escape>", lambda event: on_closing())
