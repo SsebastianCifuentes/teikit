@@ -17,7 +17,7 @@ def setup_gpio():
 
 # Función para crear un botón con comportamiento adaptable
 def create_button(relay_pin, root, status_label):
-    button = tk.Button(root, text=f"Relay {relay_pin + 1}", command=lambda p=relay_pin: toggle_relay(relay_pins[p], status_label))
+    button = tk.Button(root, text=f"Relay {relay_pin + 1}", font=("Helvetica", 20), command=lambda p=relay_pin: toggle_relay(relay_pins[p], status_label))
     row, col = relay_pin // 4, relay_pin % 4
     button.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")  # Configura sticky para que el botón se expanda
 
@@ -37,7 +37,7 @@ def main():
         global root
         root = tk.Tk()
         root.title("Relay UI - Teikit")
-        root.geometry("1920x1080")
+        root.geometry("1800x900")
         root.protocol("WM_DELETE_WINDOW", on_closing)
 
         setup_gpio()
@@ -49,7 +49,7 @@ def main():
             root.grid_columnconfigure(j, weight=1)
 
         # Etiqueta de estado
-        status_label = tk.Label(root, text="", font=("Helvetica", 16))
+        status_label = tk.Label(root, text="", font=("Helvetica", 30))
         status_label.grid(row=len(relay_pins) // 4 + 1, columnspan=4, sticky="ew")
 
         # Crea botones para cada relé
