@@ -25,10 +25,17 @@ def setup_gpio():
 
 # Función para crear un botón con comportamiento adaptable
 def create_button(relay_pin, root, status_label):
-    button = tk.Button(root, text=f"Relé {relay_pin + 1}", font=("Helvetica", 30), command=lambda p=relay_pin, b=button: toggle_relay(relay_pins[p], b, status_label))
+    # Crear el botón
+    button = tk.Button(root, text=f"Relé {relay_pin + 1}", font=("Helvetica", 30), command=lambda p=relay_pin, b=None: toggle_relay(relay_pins[p], b, status_label))
+    
+    # Configurar la fila y la columna
     row, col = relay_pin // 4, relay_pin % 4
-    button.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")  # Configura sticky para que el botón se expanda
-    update_button_color(relay_pin, button)  # Establece el color inicial del botón
+    button.grid(row=row + 1, column=col, padx=10, pady=10, sticky="nsew")  # +1 para dejar espacio para la etiqueta de estado
+    
+    # Actualizar el color del botón en función del estado inicial del relé
+    update_button_color(relay_pin, button)
+
+    return button
 
 # Función para actualizar el estado del relé
 def update_status(relay_pin, status_label):
@@ -62,13 +69,11 @@ def main():
         status_label = tk.Label(root, text="", font=("Helvetica", 30))
         status_label.grid(row=0, columnspan=4, sticky="ew")
 
-        # Crea botones para cada relé, empezando desde la segunda fila
+        # Crear botones para cada relé
+        buttons = []
         for i in range(len(relay_pins)):
-            row, col = (i // 4) + 1, i % 4  # +1 para dejar espacio para la etiqueta de estado
-            button = tk.Button(root, text=f"Relé {i + 1}", font=("Helvetica", 30), command=lambda p=i, b=button: toggle_relay(relay_pins[p], b, status_label))
-            button.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")
-
-            update_status(relay_pins[i], status_label)
+            button = create_button(i, root, status_label)
+            buttons.append(button)
 
         root.mainloop()
     except Exception as e:
