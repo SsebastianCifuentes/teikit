@@ -25,7 +25,7 @@ def setup_gpio():
 
 # Función para crear un botón con comportamiento adaptable
 def create_button(relay_pin, root, status_label):
-    button = tk.Button(root, text=f"Relé {relay_pin + 1}", font=("Helvetica", 30), command=lambda p=relay_pin: toggle_relay(relay_pins[p], button, status_label))
+    button = tk.Button(root, text=f"Relé {relay_pin + 1}", font=("Helvetica", 30), command=lambda p=relay_pin, b=button: toggle_relay(relay_pins[p], b, status_label))
     row, col = relay_pin // 4, relay_pin % 4
     button.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")  # Configura sticky para que el botón se expanda
     update_button_color(relay_pin, button)  # Establece el color inicial del botón
@@ -65,7 +65,7 @@ def main():
         # Crea botones para cada relé, empezando desde la segunda fila
         for i in range(len(relay_pins)):
             row, col = (i // 4) + 1, i % 4  # +1 para dejar espacio para la etiqueta de estado
-            button = tk.Button(root, text=f"Relé {i + 1}", font=("Helvetica", 30), command=lambda p=i: toggle_relay(relay_pins[p], button, status_label))
+            button = tk.Button(root, text=f"Relé {i + 1}", font=("Helvetica", 30), command=lambda p=i, b=button: toggle_relay(relay_pins[p], b, status_label))
             button.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")
 
             update_status(relay_pins[i], status_label)
