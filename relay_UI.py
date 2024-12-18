@@ -9,51 +9,53 @@ def toggle_relay(relay_pin, status_label):
     GPIO.output(relay_pin, not GPIO.input(relay_pin))
     update_status(relay_pin, status_label)
 
-# Función para configurar los pines GPIO como salidas
+# Configuración inicial de los pines GPIO
 def setup_gpio():
     for pin in relay_pins:
         GPIO.setup(pin, GPIO.OUT)
         GPIO.output(pin, GPIO.LOW)
 
-# Función para crear un botón en la interfaz gráfica para cada relé
-def create_button(relay_pin, root, status_label, relay_index):
-    button = tk.Button(
-        root, 
-        text=f"Relay {relay_index + 1}", 
-        command=lambda p=relay_pin: toggle_relay(p, status_label)
-    )
-    button.grid(row=relay_index // 4, column=relay_index % 4, padx=10, pady=10)
+# Función para crear un botón con comportamiento adaptable
+def create_button(relay_pin, root, status_label):
+    button = tk.Button(root, text=f"Relay {relay_pin + 1}", command=lambda p=relay_pin: toggle_relay(relay_pins[p], status_label))
+    row, col = relay_pin // 4, relay_pin % 4
+    button.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")  # Configura sticky para que el botón se expanda
 
-# Función para actualizar el estado del relé en la interfaz gráfica
+# Función para actualizar el estado del relé
 def update_status(relay_pin, status_label):
     status = "ON" if GPIO.input(relay_pin) == GPIO.HIGH else "OFF"
     status_label.config(text=f"Relay {relay_pins.index(relay_pin) + 1}: {status}")
 
-# Función para limpiar los recursos al cerrar la ventana
+# Función para liberar los recursos al cerrar la ventana
 def on_closing():
     GPIO.cleanup()
     root.destroy()
 
-# Función principal que configura la interfaz y controla los relés
+# Configuración principal
 def main():
     try:
         global root
-        # Crea la ventana principal de la interfaz gráfica
         root = tk.Tk()
         root.title("Relay UI - Teikit")
-        root.geometry("1024x600")  
+        root.geometry("1024x600")
         root.protocol("WM_DELETE_WINDOW", on_closing)
 
         setup_gpio()
 
-        # Crea una etiqueta para mostrar el estado de los relés
-        status_label = tk.Label(root, text="", font=("Helvetica", 16))
-        status_label.grid(row=len(relay_pins) // 4, columnspan=4)
+        # Configura pesos de las filas y columnas
+        for i in range(len(relay_pins) // 4 + 1):
+            root.grid_rowconfigure(i, weight=1)
+        for j in range(4):  # Máximo 4 columnas
+            root.grid_columnconfigure(j, weight=1)
 
-        # Crea los botones para cada relé y actualiza su estado
-        for i, relay_pin in enumerate(relay_pins):
-            create_button(relay_pin, root, status_label, i)
-            update_status(relay_pin, status_label)
+        # Etiqueta de estado
+        status_label = tk.Label(root, text="", font=("Helvetica", 16))
+        status_label.grid(row=len(relay_pins) // 4 + 1, columnspan=4, sticky="ew")
+
+        # Crea botones para cada relé
+        for i in range(len(relay_pins)):
+            create_button(i, root, status_label)
+            update_status(relay_pins[i], status_label)
 
         root.mainloop()
     except Exception as e:
