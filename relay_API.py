@@ -39,7 +39,7 @@ def abrir_casillero():
 
         # Validar si el número de casillero es válido
         if casillero not in relay_pins:
-            return jsonify({"error": "Número de casillero inválido"}), 400
+            return jsonify({"error": "Numero de casillero invalido"}), 400
 
         pin = relay_pins[casillero]
 
@@ -48,7 +48,7 @@ def abrir_casillero():
         time.sleep(3)  # Mantener el casillero abierto por 3 segundos
         GPIO.output(pin, GPIO.LOW)
 
-        return jsonify({"status": f"Casillero {casillero} abierto con éxito"}), 200
+        return jsonify({"status": f"Casillero {casillero} abierto con exito"}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
