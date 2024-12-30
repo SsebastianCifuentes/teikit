@@ -36,7 +36,7 @@ def main():
     try:
         global root
         root = tk.Tk()
-        root.title("Relé UI - Teikit")  # Cambié el título
+        root.title("Relé UI - Teikit")
         root.geometry("1000x600")
         root.protocol("WM_DELETE_WINDOW", on_closing)
 
