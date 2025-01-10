@@ -2,17 +2,36 @@
 
 Un entorno virtual es una herramienta que te permite crear un espacio aislado para instalar y gestionar dependencias (paquetes de Python) necesarias para un proyecto específico.
 
-Para activar el entorno virtual
+Lo primero es dirigirse a la ruta en donde esta ubicado el directorio de trabajo
+```
+cd /Desktop/Teikit
+```
+
+Una vez ahí, se debe activar el entorno virtual
 ```
 source teikit-casillero/bin/activate
 ```
 
-Para ejecutar un programa python
-```
-python3 nombre_archivo.py
-```
-
-Para desactivar el entorno virtual
+Para desactivar el entorno virtual (por si acaso)
 ```
 deactivate
+```
+
+Ejecutamos el servidor Flask para la apertura de casilleros
+```
+python3 relay_API.py
+```
+Esto permite que la API empiece a escuchar mediante la direccion 192.168.0.100:50000
+
+Luego se debe activar el tunel ngrok, el cual asigna un dominio publico para acceder al servidor Flask desde cualquier lugar (Abrir en otra terminal)
+```
+ngrok http nicely-valued-chimp.ngrok-free.app 50000
+```
+
+Finalmente se puede probar desde una red externa mediante CMD
+```
+curl -X POST https://nicely-valued-chimp.ngrok-free.app/opening ^
+     -H "Authorization: Bearer t2e0i2k4IT" ^
+     -H "Content-Type: application/json" ^
+     -d "{\"casillero\": 1}"
 ```
