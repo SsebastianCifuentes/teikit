@@ -62,6 +62,6 @@ def shutdown():
 # Iniciar el servidor Flask
 if __name__ == '__main__':
     try:
-        app.run(host='0.0.0.0', port=5000)  # Escucha en todas las interfaces, puerto 5000
+        app.run(host='0.0.0.0', port=50000)  # Escucha en todas las interfaces, puerto 5000
     except KeyboardInterrupt:
         GPIO.cleanup()
