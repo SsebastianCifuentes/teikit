@@ -66,11 +66,7 @@ def open_locker():
 # Ruta para apagar el sistema
 @app.route('/shutdown', methods=['POST'])
 def shutdown():
-    # Detener el servidor Flask de forma explícita
-    func = request.environ.get('werkzeug.server.shutdown')
-    if func is not None:
-        func()  
-    GPIO.cleanup()  
+    GPIO.cleanup()
     return jsonify({"status": "Sistema apagado"}), 200
 
 # Función para limpiar los pines GPIO al cerrar la aplicación
