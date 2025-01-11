@@ -1,67 +1,82 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, abort
 import RPi.GPIO as GPIO
 import time
+import os
+from dotenv import load_dotenv
+from signal import signal, SIGINT
 
-# Configuración inicial de Flask y GPIO
+# Cargar configuración del token desde variables de entorno
+load_dotenv()
+API_TOKEN = os.getenv("API_TOKEN")
+if not API_TOKEN:
+    raise ValueError("API_TOKEN no configurado en las variables de entorno")
+
 app = Flask(__name__)
 GPIO.setmode(GPIO.BOARD)
 
 # Diccionario que mapea números de casilleros a pines GPIO
-relay_pins = {
-    1: 16,  # Casillero 1 conectado al pin físico 16
-    2: 11,  # Casillero 2 conectado al pin físico 11
-    3: 12,  # Casillero 3 conectado al pin físico 12
-    4: 7,   # Casillero 4 conectado al pin físico 7
-    # Añade más casilleros según sea necesario
-}
+relay_pins = {1: 7, 2: 12, 3: 15, 4: 16, 5: 18, 6: 22, 7: 24, 8: 26, 
+              9: 31, 10: 32, 11: 33, 12: 35, 13: 36, 14: 37, 15: 38, 16: 40}
 
-# Configurar pines GPIO como salidas y desactivarlos inicialmente
-for pin in relay_pins.values():
-    GPIO.setup(pin, GPIO.OUT)
-    GPIO.output(pin, GPIO.LOW)
+# Configurar los pines GPIO
+def configure_gpio(pins):
+    for pin in pins:
+        GPIO.setup(pin, GPIO.OUT)
+        GPIO.output(pin, GPIO.LOW)
 
-# Token de autenticación para mayor seguridad
-API_TOKEN = "t2e0i2k4IT"
+configure_gpio(relay_pins.values())
 
-# Middleware para verificar el token en cada solicitud
+# Middleware para verificar el token de autorización
 @app.before_request
-def verificar_token():
+def verify_token():
     token = request.headers.get('Authorization')
     if token != f"Bearer {API_TOKEN}":
-        return jsonify({"error": "Acceso no autorizado"}), 401
+        abort(401, description="Acceso no autorizado")
+
+# Ruta principal con información sobre las rutas disponibles
+@app.route('/')
+def index():
+    return jsonify({"routes": {
+        "/opening": "POST - Abre un casillero. Requiere 'casillero' en el cuerpo JSON.",
+        "/shutdown": "POST - Apaga el sistema y limpia GPIO."
+    }})
 
 # Ruta para abrir un casillero
 @app.route('/opening', methods=['POST'])
-def abrir_casillero():
+def open_locker():
     try:
-        data = request.json
-        casillero = data.get('casillero')
+        data = request.get_json()
+        if not data or 'casillero' not in data:
+            abort(400, description="El cuerpo de la solicitud debe incluir 'casillero'")
 
-        # Validar si el número de casillero es válido
-        if casillero not in relay_pins:
-            return jsonify({"error": "Numero de casillero invalido"}), 400
+        locker = data.get('casillero')
+        if not isinstance(locker, int) or locker not in relay_pins:
+            abort(400, description="Número de casillero inválido")
 
-        pin = relay_pins[casillero]
-
-        # Activar el relé (abre el casillero)
+        pin = relay_pins[locker]
         GPIO.output(pin, GPIO.HIGH)
-        time.sleep(3)  # Mantener el casillero abierto por 3 segundos
+        time.sleep(3)
         GPIO.output(pin, GPIO.LOW)
 
-        return jsonify({"status": f"Casillero {casillero} abierto con exito"}), 200
+        return jsonify({"status": f"Casillero {locker} abierto con éxito"}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Ruta para liberar los pines GPIO y apagar el sistema
+# Ruta para apagar el sistema
 @app.route('/shutdown', methods=['POST'])
 def shutdown():
     GPIO.cleanup()
     return jsonify({"status": "Sistema apagado"}), 200
 
+# Función para limpiar los pines GPIO al cerrar la aplicación
+def cleanup_gpio(signal_received, frame):
+    GPIO.cleanup()
+    print("GPIO limpiado y aplicación cerrada")
+    exit(0)
+
+signal(SIGINT, cleanup_gpio)
+
 # Iniciar el servidor Flask
 if __name__ == '__main__':
-    try:
-        app.run(host='0.0.0.0', port=50000)  # Escucha en todas las interfaces, puerto 5000
-    except KeyboardInterrupt:
-        GPIO.cleanup()
+    app.run(host='0.0.0.0', port=50000)
