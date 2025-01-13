@@ -27,11 +27,3 @@ Luego se debe activar el tunel ngrok, el cual asigna un dominio publico para acc
 ```
 ngrok http --url nicely-valued-chimp.ngrok-free.app 50000
 ```
-
-Finalmente se puede probar desde una red externa mediante CMD
-```
-curl -X POST https://nicely-valued-chimp.ngrok-free.app/opening ^
-     -H "Authorization: Bearer t2e0i2k4IT" ^
-     -H "Content-Type: application/json" ^
-     -d "{\"casillero\": 1}"
-```
