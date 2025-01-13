@@ -37,8 +37,7 @@ def verify_token():
 @app.route('/')
 def index():
     return jsonify({"routes": {
-        "/opening": "POST - Abre un casillero. Requiere 'casillero' en el cuerpo JSON.",
-        "/shutdown": "POST - Apaga el sistema y limpia GPIO."
+        "/opening": "POST - Abre un casillero. Requiere 'casillero' en el cuerpo JSON."
     }})
 
 # Ruta para abrir un casillero
@@ -63,18 +62,13 @@ def open_locker():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Ruta para apagar el sistema
-@app.route('/shutdown', methods=['POST'])
-def shutdown():
-    GPIO.cleanup()
-    return jsonify({"status": "Sistema apagado"}), 200
-
 # Función para limpiar los pines GPIO al cerrar la aplicación
 def cleanup_gpio(signal_received, frame):
     GPIO.cleanup()
     print("GPIO limpiado y aplicación cerrada")
     exit(0)
 
+# Asignar la señal de interrupción (Ctrl+C) para limpiar los GPIO
 signal(SIGINT, cleanup_gpio)
 
 # Iniciar el servidor Flask
