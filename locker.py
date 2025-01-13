@@ -21,7 +21,7 @@ relay_pins = {
     9: 31, 10: 32, 11: 33, 12: 35, 13: 36, 14: 37, 15: 38, 16: 40
 }
 TOTAL_LOCKERS = len(relay_pins)
-GPIO.cleanup()
+
 GPIO.setmode(GPIO.BOARD)
 def setup_gpio(pins):
     for pin in pins:
@@ -134,23 +134,35 @@ def get_locker_count():
 
 @app.route('/locker/opening', methods=['POST'])
 def open_locker():
-    data = request.get_json()
-    if not data or 'casillero' not in data:
-        abort(400, description="El cuerpo de la solicitud debe incluir 'casillero'")
+    try:
+        data = request.get_json()
+        if not data or 'casillero' not in data:
+            abort(400, description="El cuerpo de la solicitud debe incluir 'casillero'")
 
-    locker = data.get('casillero')
-    if not isinstance(locker, int) or locker < 1 or locker > TOTAL_LOCKERS:
-        abort(400, description=f"Casillero inválido. Seleccione entre 1 y {TOTAL_LOCKERS}.")
+        locker = data.get('casillero')
+        if not isinstance(locker, int) or locker < 1 or locker > TOTAL_LOCKERS:
+            abort(400, description=f"Casillero inválido. Seleccione entre 1 y {TOTAL_LOCKERS}.")
 
-    open_locker_gpio(locker)
-    return jsonify({"status": f"Casillero {locker} abierto con éxito"}), 200
+        pin = relay_pins[locker]
+        GPIO.output(pin, GPIO.HIGH)
+        time.sleep(3)
+        GPIO.output(pin, GPIO.LOW)
 
+        return jsonify({"status": f"Casillero {locker} abierto con éxito"}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 @app.route('/locker/opening/all', methods=['POST'])
 def open_all_lockers():
     try:
-        for locker in relay_pins.keys():
-            open_locker_gpio(locker)
+        for pin in relay_pins.values():
+            GPIO.output(pin, GPIO.HIGH)
+        time.sleep(3)  # Mantén los pines activados durante 3 segundos
+        for pin in relay_pins.values():
+            GPIO.output(pin, GPIO.LOW)
+
         return jsonify({"status": "Todos los casilleros han sido abiertos"}), 200
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
