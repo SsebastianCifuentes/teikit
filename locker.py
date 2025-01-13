@@ -22,15 +22,13 @@ relay_pins = {
 }
 TOTAL_LOCKERS = len(relay_pins)
 
-app = Flask(__name__)
-
 GPIO.setmode(GPIO.BOARD)
-def setup_gpio():
-    for pin in relay_pins.values():
+def setup_gpio(pins):
+    for pin in pins:
         GPIO.setup(pin, GPIO.OUT)
         GPIO.output(pin, GPIO.LOW)
 
-setup_gpio()
+setup_gpio(relay_pins.values())
 
 # Abrir un casillero por 3 segundos
 def open_locker_gpio(locker_number):
@@ -114,6 +112,8 @@ def start_ui():
 # --------------------------------------
 # Configuración del Servidor Flask
 # --------------------------------------
+app = Flask(__name__)
+
 @app.before_request
 def verify_token():
     token = request.headers.get('Authorization')
