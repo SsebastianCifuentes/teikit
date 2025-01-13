@@ -62,7 +62,6 @@ def start_ui():
         notify_external_api(locker_number)
 
     def on_closing():
-        GPIO.cleanup()
         root.destroy()
 
     root = tk.Tk()
@@ -77,7 +76,6 @@ def start_ui():
 
     # Configurar la ventana para que sea borderless
     root.overrideredirect(True)  # Elimina el borde de la ventana
-
     root.protocol("WM_DELETE_WINDOW", on_closing)
 
     # Crear un botón de "Cerrar" que estará en la parte superior de la ventana
