@@ -73,4 +73,4 @@ signal(SIGINT, cleanup_gpio)
 
 # Iniciar el servidor Flask
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=50000)
+    app.run(host='0.0.0.0', port=5000)
