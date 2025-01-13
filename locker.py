@@ -6,7 +6,7 @@ import os
 from flask import Flask, request, jsonify, abort
 from dotenv import load_dotenv
 from signal import signal, SIGINT
-from threading import Thread
+from threading import Thread, Lock
 
 # Cargar configuración del token desde variables de entorno
 load_dotenv()
@@ -22,6 +22,7 @@ relay_pins = {
 }
 TOTAL_LOCKERS = len(relay_pins)
 
+gpio_lock = Lock()
 GPIO.setmode(GPIO.BOARD)
 def setup_gpio(pins):
     for pin in pins:
@@ -32,10 +33,11 @@ setup_gpio(relay_pins.values())
 
 # Abrir un casillero por 3 segundos
 def open_locker_gpio(locker_number):
-    pin = relay_pins[locker_number]
-    GPIO.output(pin, GPIO.HIGH)
-    time.sleep(3)
-    GPIO.output(pin, GPIO.LOW)
+    with gpio_lock:
+        pin = relay_pins[locker_number]
+        GPIO.output(pin, GPIO.HIGH)
+        time.sleep(3)
+        GPIO.output(pin, GPIO.LOW)
 
 # Notificar a la API externa
 def notify_external_api(locker_number):
@@ -58,15 +60,18 @@ def notify_external_api(locker_number):
 # --------------------------------------
 def start_ui():
     def open_locker_ui(locker_number):
-        open_locker_gpio(locker_number)
-        notify_external_api(locker_number)
+        Thread(target=lambda: (
+            open_locker_gpio(locker_number),
+            notify_external_api(locker_number)
+        )).start()
 
     def on_closing():
+        GPIO.cleanup()
         root.destroy()
 
     root = tk.Tk()
     root.title("Relé UI - Teikit")
-    
+
     # Obtener la resolución de la pantalla
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
@@ -105,7 +110,6 @@ def start_ui():
         button.grid(row=row + 1, column=col, padx=10, pady=10, sticky="nsew")  # Desplazar las filas para dejar espacio al botón de cerrar
 
     root.mainloop()
-
 
 # --------------------------------------
 # Configuración del Servidor Flask
@@ -163,5 +167,8 @@ signal(SIGINT, cleanup_gpio)
 # Iniciar Flask y Tkinter
 # --------------------------------------
 if __name__ == '__main__':
+    flask_thread = Thread(target=lambda: app.run(host='0.0.0.0', port=5000))
+    flask_thread.daemon = True
+    flask_thread.start()
+
     start_ui()
-    app.run(host='0.0.0.0', port=5000)
