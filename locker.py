@@ -69,9 +69,7 @@ def start_ui():
     root.title("Relé UI - Teikit")
     
     # Configurar la ventana para que sea borderless y ocupe toda la pantalla
-    root.overrideredirect(True)  # Elimina el borde de la ventana
     root.attributes('-fullscreen', True)  # Hace que la ventana ocupe toda la pantalla
-
     root.protocol("WM_DELETE_WINDOW", on_closing)
 
     # Configurar la cuadrícula para los botones (igual que antes)
