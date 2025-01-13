@@ -21,7 +21,7 @@ relay_pins = {
     9: 31, 10: 32, 11: 33, 12: 35, 13: 36, 14: 37, 15: 38, 16: 40
 }
 TOTAL_LOCKERS = len(relay_pins)
-
+GPIO.cleanup()
 GPIO.setmode(GPIO.BOARD)
 def setup_gpio(pins):
     for pin in pins:
