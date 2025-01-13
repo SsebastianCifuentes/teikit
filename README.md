@@ -25,5 +25,5 @@ Esto permite que la API empiece a escuchar mediante la direccion 192.168.0.100:5
 
 Luego se debe activar el tunel ngrok, el cual asigna un dominio publico para acceder al servidor Flask desde cualquier lugar (Abrir en otra terminal)
 ```
-ngrok http --url nicely-valued-chimp.ngrok-free.app 50000
+ngrok http --url nicely-valued-chimp.ngrok-free.app 5000
 ```
