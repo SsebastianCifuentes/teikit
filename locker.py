@@ -80,7 +80,16 @@ def start_ui():
 
     root.protocol("WM_DELETE_WINDOW", on_closing)
 
-    # Configurar la cuadrícula para los botones (igual que antes)
+    # Crear un botón de "Cerrar" que estará en la parte superior de la ventana
+    close_button = tk.Button(
+        root,
+        text="Cerrar",
+        font=("Helvetica", 20),
+        command=on_closing
+    )
+    close_button.grid(row=0, column=0, padx=10, pady=10, sticky="nw")  # Se coloca en la esquina superior izquierda
+
+    # Configurar la cuadrícula para los botones de los casilleros
     for i in range(TOTAL_LOCKERS // 4 + 1):  # Configurar filas
         root.grid_rowconfigure(i, weight=1)
     for j in range(4):  # Máximo 4 columnas
@@ -95,9 +104,10 @@ def start_ui():
             font=("Helvetica", 20),
             command=lambda ln=locker_number: open_locker_ui(ln)
         )
-        button.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")
+        button.grid(row=row + 1, column=col, padx=10, pady=10, sticky="nsew")  # Desplazar las filas para dejar espacio al botón de cerrar
 
     root.mainloop()
+
 
 # --------------------------------------
 # Configuración del Servidor Flask
