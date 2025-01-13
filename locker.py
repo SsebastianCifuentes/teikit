@@ -55,6 +55,27 @@ def notify_external_api(locker_number):
     except Exception as e:
         print(f"Error al intentar notificar a la API externa: {e}")
 
+# Función para abrir todos los casilleros
+def open_all_lockers_gpio():
+    for locker_number in relay_pins.keys():
+        open_locker_gpio(locker_number)
+
+# Notificar a la API que todos los casilleros fueron abiertos
+def notify_all_lockers_open():
+    try:
+        headers = {"Authorization": f"Bearer {API_TOKEN}"}
+        response = requests.post(
+            EXTERNAL_API,
+            json={"casillero": "todos"},
+            headers=headers
+        )
+        if response.status_code == 200:
+            print(f"Notificación enviada a la API externa: Todos los casilleros abiertos")
+        else:
+            print(f"Error al notificar a la API externa: {response.status_code} - {response.text}")
+    except Exception as e:
+        print(f"Error al intentar notificar a la API externa: {e}")
+
 # --------------------------------------
 # Configuración de la UI (Tkinter)
 # --------------------------------------
@@ -63,6 +84,12 @@ def start_ui():
         Thread(target=lambda: (
             open_locker_gpio(locker_number),
             notify_external_api(locker_number)
+        )).start()
+
+    def open_all_lockers_ui():
+        Thread(target=lambda: (
+            open_all_lockers_gpio(),
+            notify_all_lockers_open()
         )).start()
 
     def on_closing():
@@ -91,6 +118,15 @@ def start_ui():
         command=on_closing
     )
     close_button.grid(row=0, column=0, padx=10, pady=10, sticky="nw")  # Se coloca en la esquina superior izquierda
+
+    # Crear un botón para abrir todos los casilleros
+    open_all_button = tk.Button(
+        root,
+        text="Abrir Todos los Casilleros",
+        font=("Helvetica", 20),
+        command=open_all_lockers_ui
+    )
+    open_all_button.grid(row=0, column=1, padx=10, pady=10)
 
     # Configurar la cuadrícula para los botones de los casilleros
     for i in range(TOTAL_LOCKERS // 4 + 1):  # Configurar filas
