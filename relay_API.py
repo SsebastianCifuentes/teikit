@@ -18,6 +18,9 @@ TOTAL_LOCKERS = 16  # Número total de casilleros
 relay_pins = {1: 7, 2: 12, 3: 15, 4: 16, 5: 18, 6: 22, 7: 24, 8: 26,
               9: 31, 10: 32, 11: 33, 12: 35, 13: 36, 14: 37, 15: 38, 16: 40}
 
+# Crear la aplicación Flask
+app = Flask(__name__)
+
 # Configuración de los pines GPIO
 GPIO.setmode(GPIO.BOARD)
 def configure_gpio(pins):
