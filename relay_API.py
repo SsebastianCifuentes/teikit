@@ -11,14 +11,15 @@ API_TOKEN = os.getenv("API_TOKEN")
 if not API_TOKEN:
     raise ValueError("API_TOKEN no configurado en las variables de entorno")
 
-app = Flask(__name__)
-GPIO.setmode(GPIO.BOARD)
+# Número total de casilleros
+TOTAL_LOCKERS = 16  # Número total de casilleros
 
 # Diccionario que mapea números de casilleros a pines GPIO
-relay_pins = {1: 7, 2: 12, 3: 15, 4: 16, 5: 18, 6: 22, 7: 24, 8: 26, 
+relay_pins = {1: 7, 2: 12, 3: 15, 4: 16, 5: 18, 6: 22, 7: 24, 8: 26,
               9: 31, 10: 32, 11: 33, 12: 35, 13: 36, 14: 37, 15: 38, 16: 40}
 
-# Configurar los pines GPIO
+# Configuración de los pines GPIO
+GPIO.setmode(GPIO.BOARD)
 def configure_gpio(pins):
     for pin in pins:
         GPIO.setup(pin, GPIO.OUT)
@@ -37,10 +38,11 @@ def verify_token():
 @app.route('/')
 def index():
     return jsonify({"routes": {
-        "/opening": "POST - Abre un casillero. Requiere 'casillero' en el cuerpo JSON."
+        "/opening": "POST - Abre un casillero. Requiere 'casillero' en el cuerpo JSON.",
+        "/opening/all": "POST - Abre todos los casilleros."
     }})
 
-# Ruta para abrir un casillero
+# Ruta para abrir un casillero específico
 @app.route('/opening', methods=['POST'])
 def open_locker():
     try:
@@ -49,8 +51,8 @@ def open_locker():
             abort(400, description="El cuerpo de la solicitud debe incluir 'casillero'")
 
         locker = data.get('casillero')
-        if not isinstance(locker, int) or locker not in relay_pins:
-            abort(400, description="Número de casillero inválido")
+        if not isinstance(locker, int) or locker < 1 or locker > TOTAL_LOCKERS:
+            abort(400, description=f"Casillero inválido. Seleccione entre 1 y {TOTAL_LOCKERS}.")
 
         pin = relay_pins[locker]
         GPIO.output(pin, GPIO.HIGH)
@@ -58,6 +60,21 @@ def open_locker():
         GPIO.output(pin, GPIO.LOW)
 
         return jsonify({"status": f"Casillero {locker} abierto con éxito"}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Ruta para abrir todos los casilleros
+@app.route('/opening/all', methods=['POST'])
+def open_all_lockers():
+    try:
+        for pin in relay_pins.values():
+            GPIO.output(pin, GPIO.HIGH)
+        time.sleep(3)  # Mantén los pines activados durante 3 segundos
+        for pin in relay_pins.values():
+            GPIO.output(pin, GPIO.LOW)
+
+        return jsonify({"status": "Todos los casilleros han sido abiertos"}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
