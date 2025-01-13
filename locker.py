@@ -30,6 +30,13 @@ def setup_gpio():
 
 setup_gpio()
 
+# Abrir un casillero por 3 segundos
+def open_locker_gpio(locker_number):
+    pin = relay_pins[locker_number]
+    GPIO.output(pin, GPIO.HIGH)
+    time.sleep(3)
+    GPIO.output(pin, GPIO.LOW)
+
 # Notificar a la API externa
 def notify_external_api(locker_number):
     try:
@@ -46,20 +53,13 @@ def notify_external_api(locker_number):
     except Exception as e:
         print(f"Error al intentar notificar a la API externa: {e}")
 
-# Abrir un casillero por 3 segundos
-def toggle_locker(locker_number):
-    pin = relay_pins[locker_number]
-    GPIO.output(pin, GPIO.HIGH)
-    time.sleep(3)
-    GPIO.output(pin, GPIO.LOW)
-    notify_external_api(locker_number)
-
 # --------------------------------------
 # Configuración de la UI (Tkinter)
 # --------------------------------------
 def start_ui():
     def open_locker_ui(locker_number):
-        toggle_locker(locker_number)
+        open_locker_gpio(locker_number)
+        notify_external_api(locker_number)
 
     def on_closing():
         GPIO.cleanup()
@@ -67,9 +67,14 @@ def start_ui():
 
     root = tk.Tk()
     root.title("Relé UI - Teikit")
-    root.geometry("1000x600")
+    
+    # Configurar la ventana para que sea borderless y ocupe toda la pantalla
+    root.overrideredirect(True)  # Elimina el borde de la ventana
+    root.attributes('-fullscreen', True)  # Hace que la ventana ocupe toda la pantalla
+
     root.protocol("WM_DELETE_WINDOW", on_closing)
 
+    # Configurar la cuadrícula para los botones (igual que antes)
     for i in range(TOTAL_LOCKERS // 4 + 1):  # Configurar filas
         root.grid_rowconfigure(i, weight=1)
     for j in range(4):  # Máximo 4 columnas
@@ -121,14 +126,14 @@ def open_locker():
     if not isinstance(locker, int) or locker < 1 or locker > TOTAL_LOCKERS:
         abort(400, description=f"Casillero inválido. Seleccione entre 1 y {TOTAL_LOCKERS}.")
 
-    toggle_locker(locker)
+    open_locker_gpio(locker)
     return jsonify({"status": f"Casillero {locker} abierto con éxito"}), 200
 
 @app.route('/locker/opening/all', methods=['POST'])
 def open_all_lockers():
     try:
         for locker in relay_pins.keys():
-            toggle_locker(locker)
+            open_locker_gpio(locker)
         return jsonify({"status": "Todos los casilleros han sido abiertos"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
