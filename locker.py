@@ -68,8 +68,16 @@ def start_ui():
     root = tk.Tk()
     root.title("Relé UI - Teikit")
     
-    # Configurar la ventana para que sea borderless y ocupe toda la pantalla
-    root.attributes('-fullscreen', True)  # Hace que la ventana ocupe toda la pantalla
+    # Obtener la resolución de la pantalla
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+
+    # Establecer el tamaño de la ventana a la resolución de la pantalla
+    root.geometry(f"{screen_width}x{screen_height}+0+0")
+
+    # Configurar la ventana para que sea borderless
+    root.overrideredirect(True)  # Elimina el borde de la ventana
+
     root.protocol("WM_DELETE_WINDOW", on_closing)
 
     # Configurar la cuadrícula para los botones (igual que antes)
