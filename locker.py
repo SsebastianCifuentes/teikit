@@ -165,5 +165,5 @@ signal(SIGINT, cleanup_gpio)
 # Iniciar Flask y Tkinter
 # --------------------------------------
 if __name__ == '__main__':
-    main()
+    start_ui()
     app.run(host='0.0.0.0', port=5000)
