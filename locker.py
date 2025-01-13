@@ -16,17 +16,20 @@ if not API_TOKEN or not EXTERNAL_API:
     raise ValueError("API_TOKEN o EXTERNAL_API no configurados en las variables de entorno")
 
 # Configuración de GPIO y casilleros
+GPIO.setmode(GPIO.BOARD)
+print("Modo de numeración de pines configurado como BOARD.")
 relay_pins = {
     1: 7, 2: 12, 3: 15, 4: 16, 5: 18, 6: 22, 7: 24, 8: 26,
     9: 31, 10: 32, 11: 33, 12: 35, 13: 36, 14: 37, 15: 38, 16: 40
 }
 TOTAL_LOCKERS = len(relay_pins)
 
-GPIO.setmode(GPIO.BOARD)
 def setup_gpio():
+    print("Configurando GPIO...")
     for pin in relay_pins.values():
         GPIO.setup(pin, GPIO.OUT)
         GPIO.output(pin, GPIO.LOW)
+    print("GPIO configurado y listo.")
 
 setup_gpio()
 
