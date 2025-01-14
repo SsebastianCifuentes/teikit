@@ -1,3 +1,7 @@
+# Algoritmo de prueba de los relés mediante interfaz de usuario
+# Se definen los relé como LOW, y cuando son seleccionados se activan y desactivan al ser presionado los botones
+# Desconozco si el modulo que posee el casillero funciona inversamente, por eso aclaro que hace este codigo
+
 import RPi.GPIO as GPIO
 import tkinter as tk
 

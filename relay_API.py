@@ -1,3 +1,7 @@
+# Algoritmo de prueba de los relés mediante API
+# Se definen los relé como LOW, y mediante POST/GET se activa uno o todos
+# Desconozco si el modulo que posee el casillero funciona inversamente, por eso aclaro que hace este codigo
+
 from flask import Flask, request, jsonify, abort
 import RPi.GPIO as GPIO
 import time
