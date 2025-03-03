@@ -11,8 +11,7 @@ def start_ui():
         def task():
             button.config(bg="green", fg="white")
             open_locker_gpio(locker_number)
-            notify_external_api(locker_number)
-            time.sleep(2)  
+            notify_external_api(locker_number)  
             button.config(bg="white", fg="#000000")
         
         thread = Thread(target=task)
