@@ -2,7 +2,7 @@
 import tkinter as tk
 import RPi.GPIO as GPIO
 from threading import Thread
-from gpio_controller import open_locker_gpio, open_all_lockers_gpio, relay_pins
+from gpio_controller import open_locker_gpio, open_all_lockers_gpio, relay_pins, TOTAL_LOCKERS
 from api_communicator import notify_external_api, notify_all_lockers_open
 
 def start_ui():
@@ -55,7 +55,6 @@ def start_ui():
     open_all_button.grid(row=0, column=1, padx=10, pady=10)
 
     # Configurar la cuadrícula para los botones de los casilleros
-    TOTAL_LOCKERS = len(relay_pins)
     for i in range(TOTAL_LOCKERS // 4 + 1):  # Configurar filas
         root.grid_rowconfigure(i, weight=1)
     for j in range(4):  # Máximo 4 columnas

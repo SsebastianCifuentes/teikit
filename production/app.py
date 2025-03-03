@@ -62,4 +62,5 @@ if __name__ == '__main__':
     flask_thread.daemon = True
     flask_thread.start()
 
-    start_ui()
+    Thread(target=start_ui).start()  # Ejecutar la UI en un hilo separado
+
