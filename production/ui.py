@@ -3,18 +3,15 @@ import RPi.GPIO as GPIO
 from threading import Thread
 from gpio_controller import open_locker_gpio, open_all_lockers_gpio, relay_pins, TOTAL_LOCKERS
 from api_communicator import notify_external_api, notify_all_lockers_open
-from PIL import Image, ImageTk  # Importar Pillow para manejar imágenes
+from PIL import Image, ImageTk 
 import time
 
 def start_ui():
     def open_locker_ui(locker_number, button):
         def task():
-            # Cambiar color del botón a verde
             button.config(bg="green", fg="white")
             open_locker_gpio(locker_number)
             notify_external_api(locker_number)
-            time.sleep(2)  # Duración de apertura del casillero
-            # Volver el color del botón a blanco después de 2 segundos
             button.config(bg="white", fg="#000000")
         
         thread = Thread(target=task)
@@ -34,7 +31,7 @@ def start_ui():
 
     root = tk.Tk()
     root.title("Relé UI - Teikit")
-    root.configure(bg='#f54c09')  # Fondo naranja
+    root.configure(bg='#f54c09')
 
     # Obtener la resolución de la pantalla
     screen_width = root.winfo_screenwidth()

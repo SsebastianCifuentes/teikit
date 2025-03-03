@@ -32,14 +32,9 @@ def open_locker_gpio(locker_number):
             time.sleep(2)  
             GPIO.output(pin, GPIO.LOW)
 
-    thread = threading.Thread(target=task, daemon=True)
-    thread.start()
-
 # Abrir todos los casilleros con un retraso de Xs, donde cada casillero se mantiene abierto por X segundos
 def open_all_lockers_gpio():
     def task():
         for locker_number in relay_pins.keys():
             threading.Timer((locker_number - 1) * 0.5, open_locker_gpio, args=(locker_number,)).start()
 
-    thread = threading.Thread(target=task, daemon=True)
-    thread.start()
