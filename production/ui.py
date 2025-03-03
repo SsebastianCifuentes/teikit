@@ -38,8 +38,6 @@ def start_ui():
 
     root = tk.Tk()
     root.title("Relé UI - Teikit")
-
-    # Configurar el fondo naranja
     root.configure(bg='#f54c09')  # Fondo naranja
 
     # Obtener la resolución de la pantalla
@@ -51,50 +49,58 @@ def start_ui():
     root.overrideredirect(True)
     root.protocol("WM_DELETE_WINDOW", on_closing)
 
-    # Crear un botón de "Cerrar" que estará en la parte superior de la ventana
+    # Crear un Frame para la parte superior (botones y logo)
+    top_frame = tk.Frame(root, bg='#f54c09')
+    top_frame.pack(side="top", fill="x", pady=10)
+
+    # Crear un Frame para los botones de los casilleros
+    bottom_frame = tk.Frame(root, bg='#f54c09')
+    bottom_frame.pack(expand=True, fill="both", pady=10)
+
+    # Botón "Cerrar"
     close_button = tk.Button(
-        root, text="Cerrar", font=("Arial", 18, "bold"), command=on_closing,
+        top_frame, text="Cerrar", font=("Arial", 18, "bold"), command=on_closing,
         bg="white", fg="#f54c09", relief="flat", width=10, height=2
     )
-    close_button.grid(row=0, column=0, padx=10, pady=10, sticky="nw")
+    close_button.pack(side="left", padx=20)
 
-    # Crear un botón para abrir todos los casilleros con texto más corto
+    # Botón "Apertura Total"
     open_all_button = tk.Button(
-        root, text="Apertura Total", font=("Arial", 20, "bold"), command=open_all_lockers_ui,
+        top_frame, text="Apertura Total", font=("Arial", 20, "bold"), command=open_all_lockers_ui,
         bg="white", fg="#f54c09", relief="flat", width=12, height=2
     )
-    open_all_button.grid(row=0, column=1, padx=10, pady=10)
+    open_all_button.pack(side="left", padx=20)
 
-    # Cargar el logo
-    logo = Image.open("teikit_banner.png")  
-    logo = logo.resize((372, 125), Image.Resampling.LANCZOS)
+    # Cargar y reducir el logo
+    logo = Image.open("teikit_banner.png")
+    reduction_factor = 0.5  # Reducir tamaño en un 50%
+    width, height = logo.size
+    new_size = (int(width * reduction_factor), int(height * reduction_factor))
+    logo = logo.resize(new_size, Image.Resampling.LANCZOS)
     logo = ImageTk.PhotoImage(logo)
 
-    # Colocar el logo en el lado derecho
-    logo_label = tk.Label(root, image=logo, bg='#f54c09')  # Usar el mismo color de fondo
-    logo_label.grid(row=0, column=3, padx=10, pady=10, sticky="ne")
+    # Colocar el logo en la parte derecha del `top_frame`
+    logo_label = tk.Label(top_frame, image=logo, bg='#f54c09')
+    logo_label.pack(side="right", padx=20)
 
-    # Configurar la cuadrícula para los botones de los casilleros
-    for i in range(TOTAL_LOCKERS // 4 + 1):
-        root.grid_rowconfigure(i, weight=1)
-    for j in range(4):
-        root.grid_columnconfigure(j, weight=1)
-
-    # Diccionario para mapear los botones con sus números de casillero
+    # Diccionario para mapear botones con casilleros
     button_map = {}
 
-    # Crear botones para cada casillero con colores personalizados
+    # Crear botones para cada casillero dentro de `bottom_frame`
     for i, locker_number in enumerate(relay_pins.keys(), start=1):
-        row, col = (i - 1) // 4, (i - 1) % 4
         button = tk.Button(
-            root, text=f"Casillero {locker_number}", font=("Arial", 20, "bold"),
+            bottom_frame, text=f"Casillero {locker_number}", font=("Arial", 20, "bold"),
             command=lambda ln=locker_number: open_locker_ui(ln),
             bg="white", fg="#f54c09", relief="flat", width=12, height=2
         )
-        button.grid(row=row + 1, column=col, padx=10, pady=10, sticky="nsew")
-        
-        # Guardar el botón en el diccionario
+        button.grid(row=(i - 1) // 4, column=(i - 1) % 4, padx=10, pady=10, sticky="nsew")
         button_map[button] = locker_number
+
+    # Configurar distribución uniforme en la cuadrícula de `bottom_frame`
+    for i in range((TOTAL_LOCKERS // 4) + 1):
+        bottom_frame.grid_rowconfigure(i, weight=1)
+    for j in range(4):
+        bottom_frame.grid_columnconfigure(j, weight=1)
 
     update_button_states()  # Iniciar actualización periódica de los botones
     root.mainloop()
