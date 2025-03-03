@@ -4,12 +4,10 @@ from signal import signal, SIGINT
 from gpio_controller import open_locker_gpio, open_all_lockers_gpio
 from api_communicator import notify_external_api, notify_all_lockers_open
 from ui import start_ui
+from config import API_TOKEN, EXTERNAL_API  # Importa las variables
 
 # Configuración de la API Flask
 app = Flask(__name__)
-
-API_TOKEN = os.getenv("API_TOKEN")
-EXTERNAL_API = os.getenv("EXTERNAL_API")
 
 @app.before_request
 def verify_token():

@@ -1,15 +1,6 @@
 # api_communicator.py
 import requests
-import os
-from dotenv import load_dotenv
-
-# Cargar configuración del token desde variables de entorno
-load_dotenv()
-API_TOKEN = os.getenv("API_TOKEN")
-EXTERNAL_API = os.getenv("EXTERNAL_API")
-
-if not API_TOKEN or not EXTERNAL_API:
-    raise ValueError("API_TOKEN o EXTERNAL_API no configurados en las variables de entorno")
+from config import API_TOKEN, EXTERNAL_API  # Importa las variables
 
 # Notificar a la API externa
 def notify_external_api(locker_number):
