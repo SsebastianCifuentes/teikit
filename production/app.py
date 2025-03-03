@@ -56,5 +56,6 @@ def cleanup_gpio(signal_received, frame):
 signal(SIGINT, cleanup_gpio)
 
 if __name__ == '__main__':
-    Thread(target=start_ui).start()  # Ejecutar la UI en un hilo separado
+    start_ui()
+
 
