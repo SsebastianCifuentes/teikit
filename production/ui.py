@@ -121,3 +121,6 @@ def start_ui():
         bottom_frame.grid_columnconfigure(j, weight=1)
 
     root.mainloop()
+
+if __name__ == "__main__":
+    start_ui()

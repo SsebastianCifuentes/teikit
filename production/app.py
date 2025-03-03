@@ -5,6 +5,7 @@ from signal import signal, SIGINT
 from ui import start_ui
 from config import API_TOKEN
 from threading import Thread
+import time
 
 # Configuración de la API Flask
 app = Flask(__name__)
@@ -55,7 +56,19 @@ def cleanup_gpio(signal_received, frame):
 
 signal(SIGINT, cleanup_gpio)
 
+# Iniciar UI en un hilo independiente (funciona tanto para Gunicorn como para ejecución directa)
+ui_thread = Thread(target=start_ui)
+ui_thread.daemon = True
+ui_thread.start()
+
 if __name__ == '__main__':
-    start_ui()
+    # Solo se ejecuta cuando se inicia directamente (no con Gunicorn)
+    flask_thread = Thread(target=lambda: app.run(host='0.0.0.0', port=5000))
+    flask_thread.daemon = True
+    flask_thread.start()
 
-
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        cleanup_gpio(None, None)
