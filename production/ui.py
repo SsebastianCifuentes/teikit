@@ -29,7 +29,7 @@ def start_ui():
     def update_button_states():
         for button, locker_number in button_map.items():
             state = locker_states[locker_number]
-            button.config(bg="white", fg="#f54c09")  # Color blanco con texto naranja
+            button.config(bg="white", fg="#000000")  # Texto negro
         root.after(1000, update_button_states)  # Actualizar cada 1 segundo
 
     def on_closing():
@@ -57,23 +57,33 @@ def start_ui():
     bottom_frame = tk.Frame(root, bg='#f54c09')
     bottom_frame.pack(expand=True, fill="both", pady=10)
 
+    # Estilo de los botones
+    button_width = 14  # Ancho estándar para todos los botones
+    button_height = 3  # Alto estándar para todos los botones
+    button_font = ("Arial", 18, "bold")
+    button_bg = "white"  # Fondo blanco
+    button_fg = "#000000"  # Texto negro
+    button_border = 2  # Grosor del borde
+
     # Botón "Cerrar"
     close_button = tk.Button(
-        top_frame, text="Cerrar", font=("Arial", 18, "bold"), command=on_closing,
-        bg="white", fg="#f54c09", relief="flat", width=10, height=2
+        top_frame, text="Cerrar", font=button_font, command=on_closing,
+        bg=button_bg, fg=button_fg, relief="solid", borderwidth=button_border,
+        width=button_width, height=button_height
     )
     close_button.pack(side="left", padx=20)
 
     # Botón "Apertura Total"
     open_all_button = tk.Button(
-        top_frame, text="Apertura Total", font=("Arial", 20, "bold"), command=open_all_lockers_ui,
-        bg="white", fg="#f54c09", relief="flat", width=12, height=2
+        top_frame, text="Apertura Total", font=button_font, command=open_all_lockers_ui,
+        bg=button_bg, fg=button_fg, relief="solid", borderwidth=button_border,
+        width=button_width, height=button_height
     )
     open_all_button.pack(side="left", padx=20)
 
     # Cargar y reducir el logo
     logo = Image.open("teikit_banner.png")
-    reduction_factor = 0.7  # Reducir tamaño en un 70%
+    reduction_factor = 0.5  # Reducir tamaño en un 50%
     width, height = logo.size
     new_size = (int(width * reduction_factor), int(height * reduction_factor))
     logo = logo.resize(new_size, Image.Resampling.LANCZOS)
@@ -89,9 +99,10 @@ def start_ui():
     # Crear botones para cada casillero dentro de `bottom_frame`
     for i, locker_number in enumerate(relay_pins.keys(), start=1):
         button = tk.Button(
-            bottom_frame, text=f"Casillero {locker_number}", font=("Arial", 20, "bold"),
+            bottom_frame, text=f"Casillero {locker_number}", font=button_font,
             command=lambda ln=locker_number: open_locker_ui(ln),
-            bg="white", fg="#f54c09", relief="flat", width=12, height=2
+            bg=button_bg, fg=button_fg, relief="solid", borderwidth=button_border,
+            width=button_width, height=button_height
         )
         button.grid(row=(i - 1) // 4, column=(i - 1) % 4, padx=10, pady=10, sticky="nsew")
         button_map[button] = locker_number
