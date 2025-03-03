@@ -1,7 +1,7 @@
 import tkinter as tk
 import RPi.GPIO as GPIO
 from threading import Thread
-from gpio_controller import turn_on_locker, turn_off_locker, open_all_lockers_gpio, relay_pins, TOTAL_LOCKERS
+from gpio_controller import turn_on_locker, turn_off_locker, relay_pins, TOTAL_LOCKERS
 from api_communicator import notify_external_api, notify_all_lockers_open
 from PIL import Image, ImageTk 
 import time
@@ -22,10 +22,14 @@ def start_ui():
 
     def open_all_lockers_ui():
         def task():
-            open_all_lockers_gpio()
+            for locker_number in relay_pins.keys():
+                turn_on_locker(locker_number)  
+                time.sleep(2) 
+                turn_off_locker(locker_number) 
+            
             notify_all_lockers_open()
         
-        thread = Thread(target=task)
+        thread = Thread(target=task, daemon=True)
         thread.start()
 
     def on_closing():
