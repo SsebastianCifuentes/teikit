@@ -21,24 +21,32 @@ def start_ui():
         thread.start()
 
     def open_all_lockers_ui():
+        def open_locker_with_delay(locker_number, button, delay):
+            def task():
+                button.config(bg="green", fg="white")  # Cambiar color del botón a verde
+                turn_on_locker(locker_number)  # Abrir casillero
+                time.sleep(2)  # Mantenerlo abierto por 2 segundos
+                turn_off_locker(locker_number)  # Cerrar casillero
+                button.config(bg="white", fg="#000000")  # Restaurar color del botón
+                
+                notify_external_api(locker_number)  # Notificar a la API
+            thread = Thread(target=task, daemon=True)
+            thread.start()
+            time.sleep(delay)  # Esperar el tiempo de retraso entre cada casillero
+
         def task():
-            # Variable para acumular el tiempo de retraso entre aperturas de casilleros
-            delay = 0
+            delay = 0  # Iniciar el retraso en 0 segundos
             for locker_number in relay_pins.keys():
                 button = button_map[locker_number]  # Obtener el botón correspondiente
-                button.config(bg="green", fg="white")  # Cambiar el color del botón a verde
-                turn_on_locker(locker_number)  # Encender el relé (abrir el casillero)
-                time.sleep(2)  # Mantenerlo abierto por 2 segundos
-                turn_off_locker(locker_number)  # Apagar el relé (cerrar el casillero)
-                button.config(bg="white", fg="#000000")  # Restaurar el color del botón
-
-                delay += 0.5  # Incrementar el retraso por 0.5 segundos para el siguiente casillero
-                time.sleep(delay)  # Esperar antes de abrir el siguiente casillero
+                open_locker_with_delay(locker_number, button, delay)  # Ejecutar cada casillero
+                delay += 0.5  # Incrementar el retraso para el siguiente casillero
 
             notify_all_lockers_open()  # Notificar que todos los casilleros se han abierto
 
+        # Ejecutar la tarea en un hilo separado para no bloquear la UI
         thread = Thread(target=task, daemon=True)
         thread.start()
+
 
 
     def on_closing():
