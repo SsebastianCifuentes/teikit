@@ -3,6 +3,7 @@ import tkinter as tk
 from threading import Thread
 from gpio_controller import open_locker_gpio, open_all_lockers_gpio
 from api_communicator import notify_external_api, notify_all_lockers_open
+from app import TOTAL_LOCKERS
 
 def start_ui():
     def open_locker_ui(locker_number):
