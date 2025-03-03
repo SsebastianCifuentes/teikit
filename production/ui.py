@@ -3,6 +3,7 @@ import RPi.GPIO as GPIO
 from threading import Thread
 from gpio_controller import open_locker_gpio, open_all_lockers_gpio, relay_pins, TOTAL_LOCKERS
 from api_communicator import notify_external_api, notify_all_lockers_open
+from PIL import Image, ImageTk  # Importar Pillow para manejar imágenes
 
 locker_states = {locker: "cerrado" for locker in relay_pins}
 
@@ -63,6 +64,15 @@ def start_ui():
         bg="white", fg="#f54c09", relief="flat", width=12, height=2
     )
     open_all_button.grid(row=0, column=1, padx=10, pady=10)
+
+    # Cargar el logo
+    logo = Image.open("teikit_banner.png")  
+    logo = logo.resize((100, 100), Image.ANTIALIAS)
+    logo = ImageTk.PhotoImage(logo)
+
+    # Colocar el logo en el lado derecho
+    logo_label = tk.Label(root, image=logo, bg='#f54c09')  # Usar el mismo color de fondo
+    logo_label.grid(row=0, column=3, padx=10, pady=10, sticky="ne")
 
     # Configurar la cuadrícula para los botones de los casilleros
     for i in range(TOTAL_LOCKERS // 4 + 1):
