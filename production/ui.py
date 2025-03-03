@@ -20,21 +20,21 @@ def start_ui():
         thread = Thread(target=task, daemon=True)
         thread.start()
 
-        def open_all_lockers_ui():
-            def task():
-                # Abrir cada casillero uno a uno con un pequeño retraso
-                for locker_number, button in button_map.items():  # button_map mapea los botones de los casilleros
-                    button.config(bg="green", fg="white")  # Cambiar el color del botón a verde cuando el casillero se abre
-                    turn_on_locker(locker_number)  # Encender el relé (abrir el casillero)
-                    time.sleep(2)  # Mantenerlo abierto por 2 segundos
-                    turn_off_locker(locker_number)  # Apagar el relé (cerrar el casillero)
-                    button.config(bg="white", fg="#000000")  # Restaurar el color del botón
+    def open_all_lockers_ui():
+        def task():
+            # Abrir cada casillero uno a uno con un pequeño retraso
+            for locker_number, button in button_map.items():  # button_map mapea los botones de los casilleros
+                button.config(bg="green", fg="white")  # Cambiar el color del botón a verde cuando el casillero se abre
+                turn_on_locker(locker_number)  # Encender el relé (abrir el casillero)
+                time.sleep(2)  # Mantenerlo abierto por 2 segundos
+                turn_off_locker(locker_number)  # Apagar el relé (cerrar el casillero)
+                button.config(bg="white", fg="#000000")  # Restaurar el color del botón
 
-                # Notificar a la API que todos los casilleros se han abierto
-                notify_all_lockers_open()
+            # Notificar a la API que todos los casilleros se han abierto
+            notify_all_lockers_open()
 
-            thread = Thread(target=task, daemon=True)
-            thread.start()
+        thread = Thread(target=task, daemon=True)
+        thread.start()
 
 
     def on_closing():
