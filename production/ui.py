@@ -11,10 +11,11 @@ def start_ui():
         def task():
             button.config(bg="green", fg="white")
             open_locker_gpio(locker_number)
-            #notify_external_api(locker_number)  
+            notify_external_api(locker_number)
+            time.sleep(2)  # Esperar antes de cambiar el color (esto sigue en un hilo)
             button.config(bg="white", fg="#000000")
         
-        thread = Thread(target=task)
+        thread = Thread(target=task, daemon=True)
         thread.start()
 
     def open_all_lockers_ui():
