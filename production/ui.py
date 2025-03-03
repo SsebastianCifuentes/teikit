@@ -1,4 +1,3 @@
-# ui.py
 import tkinter as tk
 import RPi.GPIO as GPIO
 from threading import Thread
@@ -27,8 +26,7 @@ def start_ui():
         thread.start()
 
     def update_button_states():
-        for i, locker_number in enumerate(relay_pins.keys(), start=1):
-            button = root.grid_slaves(row=i // 4 + 1, column=i % 4)[0]
+        for button, locker_number in button_map.items():
             state = locker_states[locker_number]
             button.config(text=f"Casillero {locker_number} ({state})", bg="green" if state == "abierto" else "red")
         root.after(1000, update_button_states)  # Actualizar cada 1 segundo
@@ -72,6 +70,9 @@ def start_ui():
     for j in range(4):
         root.grid_columnconfigure(j, weight=1)
 
+    # Diccionario para mapear los botones con sus números de casillero
+    button_map = {}
+
     # Crear botones para cada casillero con colores personalizados
     for i, locker_number in enumerate(relay_pins.keys(), start=1):
         row, col = (i - 1) // 4, (i - 1) % 4
@@ -81,6 +82,9 @@ def start_ui():
             bg="#808080", fg="white", relief="flat", width=12, height=2
         )
         button.grid(row=row + 1, column=col, padx=10, pady=10, sticky="nsew")
+        
+        # Guardar el botón en el diccionario
+        button_map[button] = locker_number
         
         # Efectos hover
         def on_hover(event):
