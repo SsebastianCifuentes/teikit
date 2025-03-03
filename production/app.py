@@ -4,7 +4,6 @@ import os
 import requests
 from dotenv import load_dotenv
 
-# Cargar configuración del token desde variables de entorno
 load_dotenv()
 API_TOKEN = os.getenv("API_TOKEN")
 EXTERNAL_API = os.getenv("EXTERNAL_API")

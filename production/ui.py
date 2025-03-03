@@ -1,16 +1,13 @@
 # ui.py
 import tkinter as tk
-from threading import Thread
 import time
 
 def open_locker_ui(locker_number):
-    # Lógica para abrir un casillero
     print(f"Abriendo casillero {locker_number}...")  # Simulación de apertura
     time.sleep(3)
     print(f"Casillero {locker_number} abierto.")
 
 def open_all_lockers_ui():
-    # Lógica para abrir todos los casilleros
     print("Abriendo todos los casilleros...")
     for i in range(1, 17):
         open_locker_ui(i)
