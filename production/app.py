@@ -1,16 +1,15 @@
 # app.py
 from flask import Flask, request, jsonify, abort
-import os
-import requests
-from dotenv import load_dotenv
+from signal import signal, SIGINT
+from gpio_controller import open_locker_gpio, open_all_lockers_gpio
+from api_communicator import notify_external_api, notify_all_lockers_open
+from ui import start_ui
 
-load_dotenv()
+# Configuración de la API Flask
+app = Flask(__name__)
+
 API_TOKEN = os.getenv("API_TOKEN")
 EXTERNAL_API = os.getenv("EXTERNAL_API")
-if not API_TOKEN or not EXTERNAL_API:
-    raise ValueError("API_TOKEN o EXTERNAL_API no configurados en las variables de entorno")
-
-app = Flask(__name__)
 
 @app.before_request
 def verify_token():
@@ -28,7 +27,7 @@ def index():
 
 @app.route('/locker', methods=['GET'])
 def get_locker_count():
-    return jsonify({"total_lockers": 16}), 200
+    return jsonify({"total_lockers": TOTAL_LOCKERS}), 200
 
 @app.route('/locker/opening', methods=['POST'])
 def open_locker():
@@ -37,13 +36,30 @@ def open_locker():
         abort(400, description="El cuerpo de la solicitud debe incluir 'casillero'")
 
     locker = data.get('casillero')
-    # Lógica para abrir el casillero
+    if not isinstance(locker, int) or locker < 1 or locker > TOTAL_LOCKERS:
+        abort(400, description=f"Casillero inválido. Seleccione entre 1 y {TOTAL_LOCKERS}.")
+
+    open_locker_gpio(locker)
     return jsonify({"status": f"Casillero {locker} abierto con éxito"}), 200
 
 @app.route('/locker/opening/all', methods=['POST'])
 def open_all_lockers():
-    # Lógica para abrir todos los casilleros
-    return jsonify({"status": "Todos los casilleros han sido abiertos"}), 200
+    try:
+        open_all_lockers_gpio()
+        return jsonify({"status": "Todos los casilleros han sido abiertos"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-def run_flask():
-    app.run(host='0.0.0.0', port=5000)
+def cleanup_gpio(signal_received, frame):
+    GPIO.cleanup()
+    print("GPIO limpiado y aplicación cerrada")
+    exit(0)
+
+signal(SIGINT, cleanup_gpio)
+
+if __name__ == '__main__':
+    flask_thread = Thread(target=lambda: app.run(host='0.0.0.0', port=5000))
+    flask_thread.daemon = True
+    flask_thread.start()
+
+    start_ui()
