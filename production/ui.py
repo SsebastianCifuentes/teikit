@@ -53,14 +53,14 @@ def start_ui():
     # Crear un botón de "Cerrar" que estará en la parte superior de la ventana
     close_button = tk.Button(
         root, text="Cerrar", font=("Helvetica", 18, "bold"), command=on_closing,
-        bg="#f54c09", fg="white", relief="flat", width=10, height=2
+        bg="white", fg="#f54c09", relief="flat", width=10, height=2
     )
     close_button.grid(row=0, column=0, padx=10, pady=10, sticky="nw")
 
     # Crear un botón para abrir todos los casilleros
     open_all_button = tk.Button(
         root, text="Abrir Todos los Casilleros", font=("Helvetica", 20), command=open_all_lockers_ui,
-        bg="#808080", fg="white", relief="flat", width=20, height=2
+        bg="white", fg="#f54c09", relief="flat", width=12, height=2
     )
     open_all_button.grid(row=0, column=1, padx=10, pady=10)
 
