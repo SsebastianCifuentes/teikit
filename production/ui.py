@@ -1,12 +1,12 @@
+# ui.py
 import tkinter as tk
-import RPi.GPIO as GPIO
 from threading import Thread
 from gpio_controller import turn_on_locker, turn_off_locker, relay_pins, TOTAL_LOCKERS
 from api_communicator import notify_external_api, notify_all_lockers_open
 from PIL import Image, ImageTk
 import time
 
-# Funciones movidas al ámbito global
+# Funciones en el ámbito global
 def open_locker_ui(locker_number, button=None):
     def task():
         if button:
@@ -44,7 +44,7 @@ def open_all_lockers_ui():
 
     thread = Thread(target=task, daemon=True)
     thread.start()
-
+    
 def start_ui():
     def on_closing():
         root.quit()
