@@ -20,17 +20,7 @@ def start_ui():
         thread = Thread(target=task, daemon=True)
         thread.start()
 
-    def open_all_lockers_ui():
-        def task():
-            for locker_number in relay_pins.keys():
-                turn_on_locker(locker_number)  
-                time.sleep(2) 
-                turn_off_locker(locker_number) 
-            
-            notify_all_lockers_open()
-        
-        thread = Thread(target=task, daemon=True)
-        thread.start()
+
 
     def on_closing():
         root.quit()  # Detiene el loop principal de Tkinter
