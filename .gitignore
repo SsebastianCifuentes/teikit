@@ -1,2 +1,2 @@
 # Ignorar el archivo de entorno
-.env
+/production/.env
