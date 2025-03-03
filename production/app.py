@@ -56,9 +56,5 @@ def cleanup_gpio(signal_received, frame):
 signal(SIGINT, cleanup_gpio)
 
 if __name__ == '__main__':
-    flask_thread = Thread(target=lambda: app.run(host='0.0.0.0', port=5000))
-    flask_thread.daemon = True
-    flask_thread.start()
-
     Thread(target=start_ui).start()  # Ejecutar la UI en un hilo separado
 
