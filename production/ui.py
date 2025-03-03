@@ -6,49 +6,49 @@ from api_communicator import notify_external_api, notify_all_lockers_open
 from PIL import Image, ImageTk
 import time
 
-# Funciones en el ámbito global
-def open_locker_ui(locker_number, button=None):
-    def task():
-        if button:
-            button.config(bg="green", fg="white")
-        turn_on_locker(locker_number)
-        time.sleep(2)
-        turn_off_locker(locker_number)
-        if button:
-            button.config(bg="white", fg="#000000")
-        notify_external_api(locker_number)
-        
-    thread = Thread(target=task, daemon=True)
-    thread.start()
+def start_ui():
+    button_map = {}  # Inicializa button_map como un diccionario vacío
 
-def open_all_lockers_ui():
-    def open_locker_with_delay(locker_number, button, delay):
+    def open_locker_ui(locker_number, button):
         def task():
             button.config(bg="green", fg="white")
             turn_on_locker(locker_number)
             time.sleep(2)
             turn_off_locker(locker_number)
             button.config(bg="white", fg="#000000")
-            notify_external_api(locker_number)
+            # notify_external_api(locker_number)
+            
         thread = Thread(target=task, daemon=True)
         thread.start()
-        time.sleep(delay)
 
-    def task():
-        delay = 0.5
-        for locker_number in relay_pins.keys():
-            button = button_map[locker_number]
-            open_locker_with_delay(locker_number, button, delay) 
+    def open_all_lockers_ui():
+        def open_locker_with_delay(locker_number, button, delay):
+            def task():
+                button.config(bg="green", fg="white")
+                turn_on_locker(locker_number)
+                time.sleep(2)
+                turn_off_locker(locker_number)
+                button.config(bg="white", fg="#000000")
+                # notify_external_api(locker_number)
+            thread = Thread(target=task, daemon=True)
+            thread.start()
+            time.sleep(delay)
 
-        notify_all_lockers_open()
+        def task():
+            delay = 0.5
+            for locker_number in relay_pins.keys():
+                button = button_map[locker_number]
+                open_locker_with_delay(locker_number, button, delay) 
 
-    thread = Thread(target=task, daemon=True)
-    thread.start()
-    
-def start_ui():
+            notify_all_lockers_open()
+
+        thread = Thread(target=task, daemon=True)
+        thread.start()
+
     def on_closing():
-        root.quit()
-        root.after(100, GPIO.cleanup)
+        root.destroy()  # Cierra la ventana de Tkinter
+        GPIO.cleanup()  # Limpia los recursos de GPIO
+        print("Aplicación cerrada correctamente")
 
     root = tk.Tk()
     root.title("Relé UI - Teikit")
@@ -108,15 +108,14 @@ def start_ui():
     logo_label = tk.Label(top_frame, image=logo, bg='#f54c09')
     logo_label.pack(side="right", padx=20)
 
-    button_map = {}
-
+    # Crear botones para cada casillero
     for i, locker_number in enumerate(relay_pins.keys(), start=1):
         button = tk.Button(
             bottom_frame, text=f"Casillero {locker_number}", **button_style
         )
         button.config(command=lambda ln=locker_number, btn=button: open_locker_ui(ln, btn))
         button.grid(row=(i - 1) // 4, column=(i - 1) % 4, padx=10, pady=10, sticky="nsew")
-        button_map[locker_number] = button
+        button_map[locker_number] = button  # Mapea el número de casillero al botón
 
     for i in range((TOTAL_LOCKERS // 4) + 1):
         bottom_frame.grid_rowconfigure(i, weight=1)
