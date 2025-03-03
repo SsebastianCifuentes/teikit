@@ -126,7 +126,7 @@ def start_ui():
         )
         button.config(command=lambda ln=locker_number, btn=button: open_locker_ui(ln, btn))
         button.grid(row=(i - 1) // 4, column=(i - 1) % 4, padx=10, pady=10, sticky="nsew")
-        button_map[button] = locker_number
+        button_map[button] = button
 
     # Configurar distribución uniforme en la cuadrícula de `bottom_frame`
     for i in range((TOTAL_LOCKERS // 4) + 1):
