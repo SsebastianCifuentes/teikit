@@ -32,8 +32,8 @@ def start_ui():
         root.after(1000, update_button_states)
 
     def on_closing():
-        GPIO.cleanup()
-        root.after(0, root.destroy)  # Ejecuta root.destroy() de forma segura en el hilo principal
+        root.quit()  # Detiene el loop principal de Tkinter
+        root.after(100, GPIO.cleanup)  # Ejecuta GPIO.cleanup() en el hilo principal después de 100 ms
 
     root = tk.Tk()
     root.title("Relé UI - Teikit")
