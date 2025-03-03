@@ -116,7 +116,7 @@ def start_ui():
     logo_label = tk.Label(top_frame, image=logo, bg='#f54c09')
     logo_label.pack(side="right", padx=20)
 
-    # Diccionario para mapear botones con casilleros
+    # Diccionario para mapear números de casilleros a botones
     button_map = {}
 
     # Crear botones para cada casillero dentro de `bottom_frame`
@@ -126,7 +126,7 @@ def start_ui():
         )
         button.config(command=lambda ln=locker_number, btn=button: open_locker_ui(ln, btn))
         button.grid(row=(i - 1) // 4, column=(i - 1) % 4, padx=10, pady=10, sticky="nsew")
-        button_map[button] = button
+        button_map[locker_number] = button  # Mapeo casillero -> botón
 
     # Configurar distribución uniforme en la cuadrícula de `bottom_frame`
     for i in range((TOTAL_LOCKERS // 4) + 1):
