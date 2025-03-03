@@ -28,7 +28,7 @@ def start_ui():
     def update_button_states():
         for button, locker_number in button_map.items():
             state = locker_states[locker_number]
-            button.config(bg="green" if state == "abierto" else "red")
+            button.config(bg="white", fg="#f54c09")  # Color blanco con texto naranja
         root.after(1000, update_button_states)  # Actualizar cada 1 segundo
 
     def on_closing():
@@ -79,22 +79,12 @@ def start_ui():
         button = tk.Button(
             root, text=f"Casillero {locker_number}", font=("Helvetica", 20),
             command=lambda ln=locker_number: open_locker_ui(ln),
-            bg="#808080", fg="white", relief="flat", width=12, height=2
+            bg="white", fg="#f54c09", relief="flat", width=12, height=2
         )
         button.grid(row=row + 1, column=col, padx=10, pady=10, sticky="nsew")
         
         # Guardar el botón en el diccionario
         button_map[button] = locker_number
-        
-        # Efectos hover
-        def on_hover(event):
-            event.widget.config(bg="#666666")
-
-        def on_leave(event):
-            event.widget.config(bg="#808080")
-
-        button.bind("<Enter>", on_hover)
-        button.bind("<Leave>", on_leave)
 
     update_button_states()  # Iniciar actualización periódica de los botones
     root.mainloop()
