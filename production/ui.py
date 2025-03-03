@@ -2,47 +2,50 @@ import tkinter as tk
 import RPi.GPIO as GPIO
 from threading import Thread
 from gpio_controller import turn_on_locker, turn_off_locker, relay_pins, TOTAL_LOCKERS
-#from api_communicator import notify_external_api, notify_all_lockers_open
-from PIL import Image, ImageTk 
+from api_communicator import notify_external_api, notify_all_lockers_open
+from PIL import Image, ImageTk
 import time
 
-def start_ui():
-    def open_locker_ui(locker_number, button):
+# Funciones movidas al ámbito global
+def open_locker_ui(locker_number, button=None):
+    def task():
+        if button:
+            button.config(bg="green", fg="white")
+        turn_on_locker(locker_number)
+        time.sleep(2)
+        turn_off_locker(locker_number)
+        if button:
+            button.config(bg="white", fg="#000000")
+        notify_external_api(locker_number)
+        
+    thread = Thread(target=task, daemon=True)
+    thread.start()
+
+def open_all_lockers_ui():
+    def open_locker_with_delay(locker_number, button, delay):
         def task():
             button.config(bg="green", fg="white")
             turn_on_locker(locker_number)
             time.sleep(2)
             turn_off_locker(locker_number)
             button.config(bg="white", fg="#000000")
-            #notify_external_api(locker_number)
-            
+            notify_external_api(locker_number)
         thread = Thread(target=task, daemon=True)
         thread.start()
+        time.sleep(delay)
 
-    def open_all_lockers_ui():
-        def open_locker_with_delay(locker_number, button, delay):
-            def task():
-                button.config(bg="green", fg="white")
-                turn_on_locker(locker_number)
-                time.sleep(2)
-                turn_off_locker(locker_number)
-                button.config(bg="white", fg="#000000")
-                #notify_external_api(locker_number)
-            thread = Thread(target=task, daemon=True)
-            thread.start()
-            time.sleep(delay)
+    def task():
+        delay = 0.5
+        for locker_number in relay_pins.keys():
+            button = button_map[locker_number]
+            open_locker_with_delay(locker_number, button, delay) 
 
-        def task():
-            delay = 0.5
-            for locker_number in relay_pins.keys():
-                button = button_map[locker_number]
-                open_locker_with_delay(locker_number, button, delay) 
+        notify_all_lockers_open()
 
-            notify_all_lockers_open()
+    thread = Thread(target=task, daemon=True)
+    thread.start()
 
-        thread = Thread(target=task, daemon=True)
-        thread.start()
-
+def start_ui():
     def on_closing():
         root.quit()
         root.after(100, GPIO.cleanup)

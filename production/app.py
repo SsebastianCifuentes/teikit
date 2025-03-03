@@ -2,7 +2,7 @@
 import RPi.GPIO as GPIO
 from flask import Flask, request, jsonify, abort
 from signal import signal, SIGINT
-from ui import start_ui
+from ui import open_locker_ui, open_all_lockers_ui
 from gpio_controller import TOTAL_LOCKERS
 from config import API_TOKEN
 from threading import Thread
@@ -39,7 +39,7 @@ def open_locker():
     if not isinstance(locker, int) or locker < 1 or locker > TOTAL_LOCKERS:
         abort(400, description=f"Casillero inválido. Seleccione entre 1 y {TOTAL_LOCKERS}.")
 
-    open_locker_gpio(locker)
+    open_locker_ui(locker)
     return jsonify({"status": f"Casillero {locker} abierto con éxito"}), 200
 
 @app.route('/locker/opening/all', methods=['POST'])
