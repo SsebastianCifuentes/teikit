@@ -4,15 +4,18 @@ from threading import Thread
 from gpio_controller import open_locker_gpio, open_all_lockers_gpio, relay_pins, TOTAL_LOCKERS
 from api_communicator import notify_external_api, notify_all_lockers_open
 from PIL import Image, ImageTk  # Importar Pillow para manejar imágenes
-
-locker_states = {locker: "cerrado" for locker in relay_pins}
+import time
 
 def start_ui():
-    def open_locker_ui(locker_number):
+    def open_locker_ui(locker_number, button):
         def task():
+            # Cambiar color del botón a verde
+            button.config(bg="green", fg="white")
             open_locker_gpio(locker_number)
-            locker_states[locker_number] = "abierto"
             notify_external_api(locker_number)
+            time.sleep(2)  # Duración de apertura del casillero
+            # Volver el color del botón a blanco después de 2 segundos
+            button.config(bg="white", fg="#000000")
         
         thread = Thread(target=task)
         thread.start()
@@ -20,16 +23,10 @@ def start_ui():
     def open_all_lockers_ui():
         def task():
             open_all_lockers_gpio()
-            locker_states.update({locker: "abierto" for locker in relay_pins})
             notify_all_lockers_open()
         
         thread = Thread(target=task)
         thread.start()
-
-    def update_button_states():
-        for button, locker_number in button_map.items():
-            button.config(bg="white", fg="#000000")  # Texto negro
-        root.after(1000, update_button_states)
 
     def on_closing():
         root.quit()  # Detiene el loop principal de Tkinter
@@ -114,7 +111,7 @@ def start_ui():
         button = tk.Button(
             bottom_frame, text=f"Casillero {locker_number}", **button_style
         )
-        button.config(command=lambda ln=locker_number: open_locker_ui(ln))
+        button.config(command=lambda ln=locker_number, btn=button: open_locker_ui(ln, btn))
         button.grid(row=(i - 1) // 4, column=(i - 1) % 4, padx=10, pady=10, sticky="nsew")
         button_map[button] = locker_number
 
@@ -124,5 +121,4 @@ def start_ui():
     for j in range(4):
         bottom_frame.grid_columnconfigure(j, weight=1)
 
-    update_button_states()
     root.mainloop()
