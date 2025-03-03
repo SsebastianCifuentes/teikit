@@ -67,7 +67,7 @@ def start_ui():
 
     # Cargar el logo
     logo = Image.open("teikit_banner.png")  
-    logo = logo.resize((100, 100), Image.Resampling.LANCZOS)
+    logo = logo.resize((372, 125), Image.Resampling.LANCZOS)
     logo = ImageTk.PhotoImage(logo)
 
     # Colocar el logo en el lado derecho
