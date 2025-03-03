@@ -1,7 +1,6 @@
-# gpio_controller.py
 import RPi.GPIO as GPIO
 import time
-from threading import Lock
+import threading
 
 # Configuración de GPIO y casilleros
 relay_pins = {
@@ -11,24 +10,37 @@ relay_pins = {
 
 TOTAL_LOCKERS = len(relay_pins)
 
-gpio_lock = Lock()
+# Lock para acceso seguro a GPIO
+gpio_lock = threading.Lock()
+
+# Configuración inicial de los pines
 GPIO.setmode(GPIO.BOARD)
 
 def setup_gpio(pins):
     for pin in pins:
         GPIO.setup(pin, GPIO.OUT)
-        GPIO.output(pin, GPIO.LOW)
+        GPIO.output(pin, GPIO.LOW) 
 
 setup_gpio(relay_pins.values())
 
-# Abrir un casillero por 3 segundos
+# Abrir un casillero por X segundos en un hilo separado
 def open_locker_gpio(locker_number):
-    with gpio_lock:
-        pin = relay_pins[locker_number]
-        GPIO.output(pin, GPIO.HIGH)
-        time.sleep(3)
-        GPIO.output(pin, GPIO.LOW)
+    def task():
+        with gpio_lock:
+            pin = relay_pins[locker_number]
+            GPIO.output(pin, GPIO.HIGH)
+            time.sleep(2) 
+            GPIO.output(pin, GPIO.LOW)
 
+    thread = threading.Thread(target=task, daemon=True)
+    thread.start()
+
+# Abrir todos los casilleros con un retraso de Xs entre cada uno
 def open_all_lockers_gpio():
-    for locker_number in relay_pins.keys():
-        open_locker_gpio(locker_number)
+    def task():
+        for locker_number in relay_pins.keys():
+            open_locker_gpio(locker_number)
+            time.sleep(0.5)  
+
+    thread = threading.Thread(target=task, daemon=True)
+    thread.start()
