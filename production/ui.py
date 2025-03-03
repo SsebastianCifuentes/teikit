@@ -1,7 +1,7 @@
 import tkinter as tk
 import RPi.GPIO as GPIO
 from threading import Thread
-from gpio_controller import open_locker_gpio, open_all_lockers_gpio, relay_pins, TOTAL_LOCKERS
+from gpio_controller import turn_on_locker, turn_off_locker, open_all_lockers_gpio, relay_pins, TOTAL_LOCKERS
 from api_communicator import notify_external_api, notify_all_lockers_open
 from PIL import Image, ImageTk 
 import time
