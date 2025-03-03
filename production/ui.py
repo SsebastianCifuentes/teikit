@@ -33,7 +33,7 @@ def start_ui():
 
     def on_closing():
         GPIO.cleanup()
-        root.destroy()
+        root.after(0, root.destroy)  # Ejecuta root.destroy() de forma segura en el hilo principal
 
     root = tk.Tk()
     root.title("Relé UI - Teikit")
