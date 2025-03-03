@@ -19,7 +19,7 @@ deactivate
 
 Ejecutamos el servidor Flask para la apertura de casilleros
 ```
-python3 relay_API.py
+python3 main.py
 ```
 Esto permite que la API empiece a escuchar mediante la direccion 192.168.0.100:50000
 
