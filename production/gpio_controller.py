@@ -13,7 +13,7 @@ TOTAL_LOCKERS = len(relay_pins)
 GPIO.setmode(GPIO.BOARD)
 for pin in relay_pins.values():
     GPIO.setup(pin, GPIO.OUT)
-    GPIO.output(pin, GPIO.LOW)  # Iniciar apagados
+    GPIO.output(pin, GPIO.LOW)
 
 def turn_on_locker(locker_number):
     pin = relay_pins.get(locker_number)

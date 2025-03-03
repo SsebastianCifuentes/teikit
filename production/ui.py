@@ -22,15 +22,20 @@ def start_ui():
 
     def open_all_lockers_ui():
         def task():
+            # Variable para acumular el tiempo de retraso entre aperturas de casilleros
+            delay = 0
             for locker_number in relay_pins.keys():
-                button.config(bg="green", fg="white") 
-                turn_on_locker(locker_number) 
-                time.sleep(2) 
-                turn_off_locker(locker_number) 
-                button.config(bg="white", fg="#000000")  
+                button = button_map[locker_number]  # Obtener el botón correspondiente
+                button.config(bg="green", fg="white")  # Cambiar el color del botón a verde
+                turn_on_locker(locker_number)  # Encender el relé (abrir el casillero)
+                time.sleep(2)  # Mantenerlo abierto por 2 segundos
+                turn_off_locker(locker_number)  # Apagar el relé (cerrar el casillero)
+                button.config(bg="white", fg="#000000")  # Restaurar el color del botón
 
-            
-            notify_all_lockers_open()
+                delay += 0.5  # Incrementar el retraso por 0.5 segundos para el siguiente casillero
+                time.sleep(delay)  # Esperar antes de abrir el siguiente casillero
+
+            notify_all_lockers_open()  # Notificar que todos los casilleros se han abierto
 
         thread = Thread(target=task, daemon=True)
         thread.start()
