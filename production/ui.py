@@ -1,5 +1,6 @@
 # ui.py
 import tkinter as tk
+import RPi.GPIO as GPIO
 from threading import Thread
 from gpio_controller import open_locker_gpio, open_all_lockers_gpio, relay_pins
 from api_communicator import notify_external_api, notify_all_lockers_open

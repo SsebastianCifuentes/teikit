@@ -1,4 +1,5 @@
 # app.py
+import RPi.GPIO as GPIO
 from flask import Flask, request, jsonify, abort
 from signal import signal, SIGINT
 from gpio_controller import open_locker_gpio, open_all_lockers_gpio
