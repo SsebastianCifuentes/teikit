@@ -4,7 +4,8 @@ from signal import signal, SIGINT
 from gpio_controller import open_locker_gpio, open_all_lockers_gpio
 from api_communicator import notify_external_api, notify_all_lockers_open
 from ui import start_ui
-from config import API_TOKEN, EXTERNAL_API  # Importa las variables
+from config import API_TOKEN, EXTERNAL_API 
+from threading import Thread
 
 # Configuración de la API Flask
 app = Flask(__name__)
