@@ -28,7 +28,7 @@ def start_ui():
     def update_button_states():
         for button, locker_number in button_map.items():
             state = locker_states[locker_number]
-            button.config(text=f"Casillero {locker_number} ({state})", bg="green" if state == "abierto" else "red")
+            button.config(bg="green" if state == "abierto" else "red")
         root.after(1000, update_button_states)  # Actualizar cada 1 segundo
 
     def on_closing():
@@ -38,8 +38,8 @@ def start_ui():
     root = tk.Tk()
     root.title("Relé UI - Teikit")
 
-    # Configurar el fondo
-    root.configure(bg='#f0f0f0')  # Fondo gris claro de la ventana
+    # Configurar el fondo naranja
+    root.configure(bg='#f54c09')  # Fondo naranja
 
     # Obtener la resolución de la pantalla
     screen_width = root.winfo_screenwidth()
