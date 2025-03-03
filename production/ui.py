@@ -52,14 +52,14 @@ def start_ui():
 
     # Crear un botón de "Cerrar" que estará en la parte superior de la ventana
     close_button = tk.Button(
-        root, text="Cerrar", font=("Helvetica", 18, "bold"), command=on_closing,
+        root, text="Cerrar", font=("Arial", 18, "bold"), command=on_closing,
         bg="white", fg="#f54c09", relief="flat", width=10, height=2
     )
     close_button.grid(row=0, column=0, padx=10, pady=10, sticky="nw")
 
-    # Crear un botón para abrir todos los casilleros
+    # Crear un botón para abrir todos los casilleros con texto más corto
     open_all_button = tk.Button(
-        root, text="Abrir Todos los Casilleros", font=("Helvetica", 20), command=open_all_lockers_ui,
+        root, text="Apertura Total", font=("Arial", 20, "bold"), command=open_all_lockers_ui,
         bg="white", fg="#f54c09", relief="flat", width=12, height=2
     )
     open_all_button.grid(row=0, column=1, padx=10, pady=10)
@@ -77,7 +77,7 @@ def start_ui():
     for i, locker_number in enumerate(relay_pins.keys(), start=1):
         row, col = (i - 1) // 4, (i - 1) % 4
         button = tk.Button(
-            root, text=f"Casillero {locker_number}", font=("Helvetica", 20),
+            root, text=f"Casillero {locker_number}", font=("Arial", 20, "bold"),
             command=lambda ln=locker_number: open_locker_ui(ln),
             bg="white", fg="#f54c09", relief="flat", width=12, height=2
         )
