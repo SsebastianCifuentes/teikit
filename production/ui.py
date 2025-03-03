@@ -3,9 +3,37 @@ import RPi.GPIO as GPIO
 from threading import Thread
 from gpio_controller import open_locker_gpio, open_all_lockers_gpio, relay_pins, TOTAL_LOCKERS
 from api_communicator import notify_external_api, notify_all_lockers_open
-from PIL import Image, ImageTk  # Importar Pillow para manejar imágenes
+from PIL import Image, ImageTk, ImageDraw
 
 locker_states = {locker: "cerrado" for locker in relay_pins}
+
+def create_rounded_button(canvas, text, command, x, y, width, height, bg_color, text_color):
+    """
+    Crea un botón redondeado usando Canvas.
+    """
+    radius = 25  # Radio de las esquinas redondeadas
+    img = Image.new("RGBA", (width, height), (255, 255, 255, 0))
+    draw = ImageDraw.Draw(img)
+    
+    # Dibujar un rectángulo con bordes redondeados
+    draw.rounded_rectangle((0, 0, width, height), radius, fill=bg_color)
+    
+    # Convertir la imagen a formato Tkinter
+    img_tk = ImageTk.PhotoImage(img)
+    
+    # Crear botón en Canvas
+    button_id = canvas.create_image(x, y, anchor="nw", image=img_tk)
+    text_id = canvas.create_text(x + width // 2, y + height // 2, text=text, font=("Arial", 14, "bold"), fill=text_color)
+
+    def on_click(event):
+        command()
+
+    # Asociar la acción al botón
+    canvas.tag_bind(button_id, "<Button-1>", on_click)
+    canvas.tag_bind(text_id, "<Button-1>", on_click)
+
+    # Mantener referencia a la imagen para evitar que se borre
+    canvas.image_refs.append(img_tk)
 
 def start_ui():
     def open_locker_ui(locker_number):
@@ -48,9 +76,10 @@ def start_ui():
     root.overrideredirect(True)
     root.protocol("WM_DELETE_WINDOW", on_closing)
 
-    # Crear un Frame para la parte superior
-    top_frame = tk.Frame(root, bg='#f54c09')
-    top_frame.pack(side="top", fill="x", pady=10)
+    # Crear un Canvas en lugar de un Frame
+    top_canvas = tk.Canvas(root, bg='#f54c09', highlightthickness=0)
+    top_canvas.pack(side="top", fill="x", pady=10)
+    top_canvas.image_refs = []  # Para evitar que las imágenes se borren
 
     # Crear un Frame para los botones de los casilleros
     bottom_frame = tk.Frame(root, bg='#f54c09')
@@ -62,11 +91,28 @@ def start_ui():
     button_font = ("Arial", 18, "bold")
 
     # Tamaño más pequeño para "Cerrar" y "Apertura Total"
-    small_button_width = 10
-    small_button_height = 2
-    small_button_font = ("Arial", 14, "bold")
+    small_button_width = 150
+    small_button_height = 50
 
-    # Bordes redondeados → Simulación con padding y colores suaves
+    # Crear botones redondeados
+    create_rounded_button(top_canvas, "Cerrar", on_closing, 20, 10, small_button_width, small_button_height, "#ff4d4d", "white")
+    create_rounded_button(top_canvas, "Apertura Total", open_all_lockers_ui, 200, 10, small_button_width, small_button_height, "#4caf50", "white")
+
+    # Cargar y escalar el logo al 70%
+    logo = Image.open("teikit_banner.png")
+    width, height = logo.size
+    new_size = (int(width * 0.7), int(height * 0.7))
+    logo = logo.resize(new_size, Image.Resampling.LANCZOS)
+    logo = ImageTk.PhotoImage(logo)
+
+    # Colocar el logo en la parte derecha del `top_canvas`
+    logo_label = tk.Label(root, image=logo, bg='#f54c09')
+    logo_label.place(x=screen_width - new_size[0] - 20, y=10)
+
+    # Diccionario para mapear botones con casilleros
+    button_map = {}
+
+    # Estilo de los botones de los casilleros
     button_style = {
         "relief": "flat",
         "borderwidth": 0,
@@ -76,38 +122,6 @@ def start_ui():
         "bg": "white",
         "fg": "#000000"
     }
-
-    # Botón "Cerrar" con fondo rojo
-    close_button = tk.Button(
-        top_frame, text="Cerrar", font=small_button_font, command=on_closing,
-        bg="#ff4d4d", fg="white", relief="flat",
-        width=small_button_width, height=small_button_height,
-        borderwidth=2, highlightbackground="#b30000", highlightthickness=2
-    )
-    close_button.pack(side="left", padx=20)
-
-    # Botón "Apertura Total" con fondo verde
-    open_all_button = tk.Button(
-        top_frame, text="Apertura Total", font=small_button_font, command=open_all_lockers_ui,
-        bg="#4caf50", fg="white", relief="flat",
-        width=small_button_width, height=small_button_height,
-        borderwidth=2, highlightbackground="#2e7d32", highlightthickness=2
-    )
-    open_all_button.pack(side="left", padx=20)
-
-    # Cargar y escalar el logo al 70%
-    logo = Image.open("teikit_banner.png")
-    width, height = logo.size
-    new_size = (int(width * 0.7), int(height * 0.7))
-    logo = logo.resize(new_size, Image.Resampling.LANCZOS)
-    logo = ImageTk.PhotoImage(logo)
-
-    # Colocar el logo en la parte derecha del `top_frame`
-    logo_label = tk.Label(top_frame, image=logo, bg='#f54c09')
-    logo_label.pack(side="right", padx=20)
-
-    # Diccionario para mapear botones con casilleros
-    button_map = {}
 
     # Crear botones para cada casillero dentro de `bottom_frame`
     for i, locker_number in enumerate(relay_pins.keys(), start=1):
