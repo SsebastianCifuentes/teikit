@@ -73,7 +73,7 @@ def start_ui():
 
     # Cargar y reducir el logo
     logo = Image.open("teikit_banner.png")
-    reduction_factor = 0.5  # Reducir tamaño en un 50%
+    reduction_factor = 0.7  # Reducir tamaño en un 70%
     width, height = logo.size
     new_size = (int(width * reduction_factor), int(height * reduction_factor))
     logo = logo.resize(new_size, Image.Resampling.LANCZOS)
