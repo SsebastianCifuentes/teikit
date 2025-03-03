@@ -39,7 +39,7 @@ def start_ui():
             for locker_number in relay_pins.keys():
                 button = button_map[locker_number]  # Obtener el botón correspondiente
                 open_locker_with_delay(locker_number, button, delay)  # Ejecutar cada casillero
-                delay += 0.5  # Incrementar el retraso para el siguiente casillero
+                delay = 0.5 
 
             notify_all_lockers_open()  # Notificar que todos los casilleros se han abierto
 
