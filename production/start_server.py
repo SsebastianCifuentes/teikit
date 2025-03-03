@@ -4,39 +4,29 @@ import signal
 import sys
 
 def start_flask():
-    return subprocess.Popen([
-        "gunicorn", 
-        "-w", "1", 
-        "-b", "0.0.0.0:5000", 
-        "--preload",  # Importante para GPIO
-        "app:app"
-    ])
+    return subprocess.Popen(["gunicorn", "-w", "1", "-b", "0.0.0.0:5000", "--preload", "app:app"])
 
 def start_ngrok():
-    return subprocess.Popen([
-        "ngrok", 
-        "http", 
-        "--url", 
-        "nicely-valued-chimp.ngrok-free.app", 
-        "5000"
-    ])
+    time.sleep(2)  # Esperar a que Flask inicie
+    return subprocess.Popen(["ngrok", "http", "--url", "nicely-valued-chimp.ngrok-free.app", "5000"])
+
+def start_ui():
+    time.sleep(3)  # Esperar a que Ngrok y Flask estén listos
+    return subprocess.Popen(["python", "ui.py"])
 
 def signal_handler(sig, frame):
-    processes = [flask_process, ngrok_process]
-    for p in processes:
-        if p:
-            p.terminate()
+    for p in [flask_process, ngrok_process, ui_process]:
+        if p: p.terminate()
     sys.exit(0)
 
 if __name__ == "__main__":
     flask_process = start_flask()
-    time.sleep(5)  # Mayor tiempo de espera para inicialización de GPIO
     ngrok_process = start_ngrok()
+    ui_process = start_ui()
     
     signal.signal(signal.SIGINT, signal_handler)
     
     try:
-        while True:
-            time.sleep(1)
+        while True: time.sleep(1)
     except KeyboardInterrupt:
         signal_handler(None, None)
