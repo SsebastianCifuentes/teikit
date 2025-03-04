@@ -31,16 +31,13 @@ def turn_off_locker(locker_number):
 def open_all_lockers_api():
     try:
         # Abrir casilleros con retrasos progresivos
-        for locker_number, delay in zip(relay_pins.keys(), [i * 0.5 for i in range(TOTAL_LOCKERS)]):
+        for locker_number, delay in zip(relay_pins.keys(), [i * 500 for i in range(TOTAL_LOCKERS)]):
             time.sleep(delay)  # Esperar el retraso correspondiente
             turn_on_locker(locker_number)  # Abrir físicamente
             print(f"Casillero {locker_number} abierto a los {delay}s")  # Debug
 
-        # Mantener abiertos durante 2 segundos
-        time.sleep(2)
-
         # Cerrar casilleros con retrasos progresivos
-        for locker_number, delay in zip(relay_pins.keys(), [i * 0.5 for i in range(TOTAL_LOCKERS)]):
+        for locker_number, delay in zip(relay_pins.keys(), [i * 2500 for i in range(TOTAL_LOCKERS)]):
             time.sleep(delay)  # Esperar el retraso correspondiente
             turn_off_locker(locker_number)  # Cerrar físicamente
             print(f"Casillero {locker_number} cerrado a los {delay}s")  # Debug
