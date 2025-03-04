@@ -53,9 +53,6 @@ def open_all_lockers_ui(root):
         for locker_number in relay_pins.keys():
             update_button(locker_number, False)
 
-    thread = Thread(target=task, daemon=True)
-    thread.start()
-
 def start_ui():
     def on_closing():
         root.destroy()
