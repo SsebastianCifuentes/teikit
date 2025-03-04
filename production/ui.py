@@ -23,6 +23,12 @@ def open_locker_ui(locker_number, button=None):
     thread.start()
 
 def open_all_lockers_ui(root):
+    def update_button(locker_number, state):
+        button = button_map[locker_number]
+        color = "green" if state else "white"
+        button.config(bg=color, fg="#000000" if not state else "white")
+        root.update_idletasks()
+        
     try:
         # Abrir casilleros con retrasos progresivos
         for locker_number, delay in zip(relay_pins.keys(), [i * 0.5 for i in range(TOTAL_LOCKERS)]):
