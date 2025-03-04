@@ -16,7 +16,9 @@ def start_ui():
 
 def signal_handler(sig, frame):
     for p in [flask_process, ngrok_process, ui_process]:
-        if p: p.terminate()
+        if p:
+            p.terminate()
+            p.wait()  # Esperar a que termine
     sys.exit(0)
 
 if __name__ == "__main__":

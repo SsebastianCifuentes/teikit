@@ -69,11 +69,6 @@ def cleanup_gpio(signal_received, frame):
 
 signal(SIGINT, cleanup_gpio)
 
-# Iniciar la UI en un hilo separado
-ui_thread = Thread(target=start_ui)
-ui_thread.daemon = True
-ui_thread.start()
-
 if __name__ == '__main__':
     # Solo se ejecuta cuando se inicia directamente (no con Gunicorn)
     flask_thread = Thread(target=lambda: app.run(host='0.0.0.0', port=5000))
