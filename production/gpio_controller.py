@@ -32,7 +32,6 @@ def open_all_lockers():
     try:
         for locker in relay_pins.keys():
             turn_on_locker(locker)
-            time.sleep(0.5)    
         time.sleep(2)
         for locker in relay_pins.keys():
             turn_off_locker(locker) 
