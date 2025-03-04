@@ -22,7 +22,7 @@ def open_locker_ui(locker_number, button=None):
     thread = Thread(target=task, daemon=True)
     thread.start()
 
-def open_all_lockers_ui():
+def open_all_lockers_ui(root):
     def task():
         root.after(0, lambda: open_all_lockers()) 
     
@@ -77,7 +77,7 @@ def start_ui():
     close_button.pack(side="left", padx=20)
 
     open_all_button = tk.Button(
-        top_frame, text="Apertura Total", font=small_button_font, command=open_all_lockers_ui,
+        top_frame, text="Apertura Total", font=small_button_font, command=lambda: open_all_lockers_ui(root),
         bg="#4caf50", fg="white", relief="flat",
         width=small_button_width, height=small_button_height,
         borderwidth=2, highlightbackground="#2e7d32", highlightthickness=2

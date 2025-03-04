@@ -29,9 +29,12 @@ def turn_off_locker(locker_number):
         GPIO.output(pin, GPIO.LOW)
 
 def open_all_lockers():
-    for locker_number in relay_pins.keys():
-        turn_on_locker(locker_number)
-        time.sleep(0.5)  
-    time.sleep(2)
-    for locker_number in relay_pins.keys():
-        turn_off_locker(locker_number)
+    try:
+        for locker in relay_pins.keys():
+            turn_on_locker(locker)
+            time.sleep(0.1)    
+        time.sleep(2)
+        for locker in relay_pins.keys():
+            turn_off_locker(locker) 
+    except Exception as e:
+        print(f"Error al abrir todos los casilleros: {e}")
