@@ -29,26 +29,29 @@ def open_all_lockers_ui(root):
         button.config(bg=color, fg="#000000" if not state else "white")
         root.update_idletasks()
 
+    def open_locker(locker_number, delay):
+        """Abre un casillero después de un retraso."""
+        root.after(int(delay * 1000), lambda: turn_on_locker(locker_number))
+        root.after(int(delay * 1000), lambda: update_button(locker_number, True))
+
+    def close_locker(locker_number, delay):
+        """Cierra un casillero después de un retraso."""
+        root.after(int(delay * 1000), lambda: turn_off_locker(locker_number))
+        root.after(int(delay * 1000), lambda: update_button(locker_number, False))
+
     try:
         # Abrir casilleros con retrasos progresivos
-        for locker_number, delay in zip(relay_pins.keys(), [i * 0.5 for i in range(TOTAL_LOCKERS)]):
-            time.sleep(delay) 
-            root.after(0, update_button, locker_number, True) 
-            turn_on_locker(locker_number)  # Abrir físicamente
+        for locker_number, delay in zip(relay_pins.keys(), [i * 500 for i in range(TOTAL_LOCKERS)]):
+            open_locker(locker_number, delay)
 
-        # Mantener todos los casilleros abiertos durante 2 segundos
-        time.sleep(2)
-
-        # Cerrar casilleros con retrasos progresivos
-        for locker_number, delay in zip(relay_pins.keys(), [i * 0.5 for i in range(TOTAL_LOCKERS)]):
-            time.sleep(delay)
-            turn_off_locker(locker_number)
-            root.after(0, update_button, locker_number, False) 
+        # Cerrar casilleros con retrasos progresivos después de 2 segundos
+        for locker_number, delay in zip(relay_pins.keys(), [i * 500 + 2000 for i in range(TOTAL_LOCKERS)]):
+            close_locker(locker_number, delay)
 
     except Exception as e:
         print(f"Error en la tarea: {e}")
         for locker_number in relay_pins.keys():
-            root.after(0, update_button, locker_number, False)
+            update_button(locker_number, False)
 
     thread = Thread(target=task, daemon=True)
     thread.start()
