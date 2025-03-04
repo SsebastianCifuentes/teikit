@@ -44,7 +44,7 @@ def open_locker():
 @app.route('/locker/opening/all', methods=['POST'])
 def open_all_lockers():
     try:
-        open_all_lockers_ui()
+        open_all_lockers_ui(root)
         return jsonify({"status": "Todos los casilleros han sido abiertos"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
