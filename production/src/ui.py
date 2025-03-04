@@ -109,7 +109,7 @@ def start_ui():
     )
     open_all_button.pack(side="left", padx=20)
 
-    logo = Image.open("teikit_banner.png")
+    logo = Image.open("production/assets/teikit_banner.png")
     width, height = logo.size
     new_size = (int(width * 0.7), int(height * 0.7))
     logo = logo.resize(new_size, Image.Resampling.LANCZOS)
