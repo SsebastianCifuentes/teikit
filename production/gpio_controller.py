@@ -1,7 +1,8 @@
+# gpio_controller
 import RPi.GPIO as GPIO
 import time
 
-# Configuración centralizada de GPIO
+# Configuración única de GPIO
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
 
@@ -12,35 +13,27 @@ relay_pins = {
 
 TOTAL_LOCKERS = len(relay_pins)
 
-# Inicialización única de pines
+# Inicializar pines solo una vez
 for pin in relay_pins.values():
     GPIO.setup(pin, GPIO.OUT)
     GPIO.output(pin, GPIO.LOW)
 
 def turn_on_locker(locker_number):
     pin = relay_pins.get(locker_number)
-    if pin: GPIO.output(pin, GPIO.HIGH)
+    if pin:
+        GPIO.output(pin, GPIO.HIGH)
 
 def turn_off_locker(locker_number):
     pin = relay_pins.get(locker_number)
-    if pin: GPIO.output(pin, GPIO.LOW)
+    if pin:
+        GPIO.output(pin, GPIO.LOW)
 
-def open_all_lockers(ui_callback=None):
+def open_all_lockers():
     try:
-        # Apertura secuencial con delay
         for locker in relay_pins.keys():
             turn_on_locker(locker)
-            if ui_callback: ui_callback(locker, True)
-            time.sleep(0.5)
-        
-        # Tiempo de apertura total
         time.sleep(2)
-        
-        # Cierre secuencial
         for locker in relay_pins.keys():
-            turn_off_locker(locker)
-            if ui_callback: ui_callback(locker, False)
-            time.sleep(0.1)
-            
+            turn_off_locker(locker) 
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Error al abrir todos los casilleros: {e}")
