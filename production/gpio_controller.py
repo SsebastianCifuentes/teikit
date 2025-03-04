@@ -28,19 +28,31 @@ def turn_off_locker(locker_number):
     if pin:
         GPIO.output(pin, GPIO.LOW)
 
-def open_all_lockers_api():
-    try:
-        # Abrir casilleros con retrasos progresivos
-        for locker_number, delay in zip(relay_pins.keys(), [i * 500 for i in range(TOTAL_LOCKERS)]):
-            time.sleep(delay)  # Esperar el retraso correspondiente
-            turn_on_locker(locker_number)  # Abrir físicamente
-            print(f"Casillero {locker_number} abierto a los {delay}s")  # Debug
+from threading import Thread
+import time
 
-        # Cerrar casilleros con retrasos progresivos
-        for locker_number, delay in zip(relay_pins.keys(), [i * 2500 for i in range(TOTAL_LOCKERS)]):
-            time.sleep(delay)  # Esperar el retraso correspondiente
-            turn_off_locker(locker_number)  # Cerrar físicamente
-            print(f"Casillero {locker_number} cerrado a los {delay}s")  # Debug
+def open_all_lockers_api():
+    def open_and_close_locker(locker_number, delay):
+        try:
+            time.sleep(delay)
+            turn_on_locker(locker_number)
+            print(f"Casillero {locker_number} abierto a los {delay}s")
+            time.sleep(2)
+            turn_off_locker(locker_number)
+            print(f"Casillero {locker_number} cerrado a los {delay + 2}s")
+        
+        except Exception as e:
+            print(f"Error en el casillero {locker_number}: {e}")
+
+    try:
+        threads = []
+        for locker_number, delay in zip(relay_pins.keys(), [i * 0.5 for i in range(TOTAL_LOCKERS)]):
+            thread = Thread(target=open_and_close_locker, args=(locker_number, delay))
+            thread.start()
+            threads.append(thread)
+        
+        for thread in threads:
+            thread.join()
 
     except Exception as e:
         print(f"Error al abrir todos los casilleros: {e}")
