@@ -7,19 +7,6 @@ from config import API_TOKEN
 from threading import Thread
 import time
 
-# Configuración de GPIO (solo una vez)
-GPIO.setmode(GPIO.BOARD)
-GPIO.setwarnings(False)  # Desactivar advertencias de GPIO
-relay_pins = {
-    1: 7, 2: 12, 3: 15, 4: 16, 5: 18, 6: 22, 7: 24, 8: 26,
-    9: 31, 10: 32, 11: 33, 12: 35, 13: 36, 14: 37, 15: 38, 16: 40
-}
-for pin in relay_pins.values():
-    GPIO.setup(pin, GPIO.OUT)
-    GPIO.output(pin, GPIO.LOW)
-
-TOTAL_LOCKERS = len(relay_pins)
-
 # Configuración de la API Flask
 app = Flask(__name__)
 
@@ -55,7 +42,7 @@ def open_locker():
     return jsonify({"status": f"Casillero {locker} abierto con éxito"}), 200
 
 @app.route('/locker/opening/all', methods=['POST'])
-def open_all_lockers():
+def open_all_lockers_api():
     try:
         open_all_lockers()
         return jsonify({"status": "Todos los casilleros han sido abiertos"}), 200

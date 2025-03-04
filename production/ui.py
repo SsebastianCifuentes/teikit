@@ -24,7 +24,7 @@ def open_locker_ui(locker_number, button=None):
 
 def open_all_lockers_ui():
     def task():
-        open_all_lockers()
+        root.after(0, lambda: open_all_lockers()) 
     
     thread = Thread(target=task, daemon=True)
     thread.start()

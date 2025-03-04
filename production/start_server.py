@@ -11,9 +11,8 @@ def start_ngrok():
     return subprocess.Popen(["ngrok", "http", "--url", "nicely-valued-chimp.ngrok-free.app", "5000"])
 
 def start_ui():
-    time.sleep(7)
-    with open("ui.log", "w") as log_file:
-        return subprocess.Popen(["python", "ui.py"], stdout=log_file, stderr=log_file)
+    time.sleep(5)  # Espera suficiente para Flask y Ngrok
+    return subprocess.Popen(["python", "ui.py"])
 
 def signal_handler(sig, frame):
     for p in [flask_process, ngrok_process, ui_process]:
