@@ -1,4 +1,4 @@
-#ui
+#ui.py
 import tkinter as tk
 import RPi.GPIO as GPIO 
 from threading import Thread

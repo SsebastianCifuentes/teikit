@@ -1,4 +1,4 @@
-#app
+#app.py
 import RPi.GPIO as GPIO
 from flask import Flask, request, jsonify, abort
 from signal import signal, SIGINT

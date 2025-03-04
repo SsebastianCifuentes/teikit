@@ -1,4 +1,4 @@
-# gpio_controller
+# gpio_controller.py
 import RPi.GPIO as GPIO
 import time
 

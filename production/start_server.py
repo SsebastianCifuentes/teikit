@@ -1,4 +1,4 @@
-#start_server
+#start_server.py
 import subprocess
 import time
 import signal
