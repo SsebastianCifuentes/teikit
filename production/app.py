@@ -3,7 +3,7 @@ import RPi.GPIO as GPIO
 from flask import Flask, request, jsonify, abort
 from signal import signal, SIGINT
 from ui import open_locker_ui, open_all_lockers_ui
-from gpio_controller import TOTAL_LOCKERS
+from gpio_controller import TOTAL_LOCKERS, open_all_lockers_api
 from config import API_TOKEN
 from threading import Thread
 import time
@@ -44,7 +44,7 @@ def open_locker():
 @app.route('/locker/opening/all', methods=['POST'])
 def open_all_lockers():
     try:
-        open_all_lockers_ui(root)
+        open_all_lockers_api()
         return jsonify({"status": "Todos los casilleros han sido abiertos"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500

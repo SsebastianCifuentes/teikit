@@ -27,3 +27,24 @@ def turn_off_locker(locker_number):
     pin = relay_pins.get(locker_number)
     if pin:
         GPIO.output(pin, GPIO.LOW)
+
+def open_all_lockers_api():
+    """Abre todos los casilleros con retrasos progresivos (para uso externo)."""
+    try:
+        # Abrir casilleros con retrasos progresivos
+        for locker_number, delay in zip(relay_pins.keys(), [i * 0.5 for i in range(TOTAL_LOCKERS)]):
+            time.sleep(delay)
+            turn_on_locker(locker_number)
+            print(f"Casillero {locker_number} abierto a los {delay}s")  # Debug
+
+        # Mantener abiertos durante 2 segundos
+        time.sleep(2)
+
+        # Cerrar casilleros con retrasos progresivos
+        for locker_number, delay in zip(relay_pins.keys(), [i * 0.5 for i in range(TOTAL_LOCKERS)]):
+            time.sleep(delay)
+            turn_off_locker(locker_number)
+            print(f"Casillero {locker_number} cerrado a los {delay}s")  # Debug
+
+    except Exception as e:
+        print(f"Error al abrir todos los casilleros: {e}")
