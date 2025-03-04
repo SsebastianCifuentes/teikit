@@ -29,21 +29,21 @@ def turn_off_locker(locker_number):
         GPIO.output(pin, GPIO.LOW)
 
 def open_all_lockers_api():
-    def open_locker(locker_number, delay):
-        root.after(int(delay), lambda: turn_on_locker(locker_number))
-        root.after(int(delay), lambda: update_button(locker_number, True))
-
-    def close_locker(locker_number, delay):
-        root.after(int(delay), lambda: turn_off_locker(locker_number))
-        root.after(int(delay), lambda: update_button(locker_number, False))
-    
     try:
-        for locker_number, delay in zip(relay_pins.keys(), [i * 500 for i in range(TOTAL_LOCKERS)]):
-            open_locker(locker_number, delay)
+        # Abrir casilleros con retrasos progresivos
+        for locker_number, delay in zip(relay_pins.keys(), [i * 0.5 for i in range(TOTAL_LOCKERS)]):
+            time.sleep(delay)  # Esperar el retraso correspondiente
+            turn_on_locker(locker_number)  # Abrir físicamente
+            print(f"Casillero {locker_number} abierto a los {delay}s")  # Debug
+
+        # Mantener abiertos durante 2 segundos
+        time.sleep(2)
 
         # Cerrar casilleros con retrasos progresivos
-        for locker_number, delay in zip(relay_pins.keys(), [i * 500 + 2000 for i in range(TOTAL_LOCKERS)]):
-            close_locker(locker_number, delay)
+        for locker_number, delay in zip(relay_pins.keys(), [i * 0.5 for i in range(TOTAL_LOCKERS)]):
+            time.sleep(delay)  # Esperar el retraso correspondiente
+            turn_off_locker(locker_number)  # Cerrar físicamente
+            print(f"Casillero {locker_number} cerrado a los {delay}s")  # Debug
 
     except Exception as e:
         print(f"Error al abrir todos los casilleros: {e}")

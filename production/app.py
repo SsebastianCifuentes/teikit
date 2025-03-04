@@ -2,7 +2,7 @@
 import RPi.GPIO as GPIO
 from flask import Flask, request, jsonify, abort
 from signal import signal, SIGINT
-from ui import open_locker_ui, open_all_lockers_ui
+from ui import open_locker_ui
 from gpio_controller import TOTAL_LOCKERS, open_all_lockers_api
 from config import API_TOKEN
 from threading import Thread
