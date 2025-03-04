@@ -1,10 +1,11 @@
 #ui.py
 import tkinter as tk
-import RPi.GPIO as GPIO 
+import RPi.GPIO as GPIO
+import time
 from threading import Thread
 from gpio_controller import turn_on_locker, turn_off_locker, relay_pins, TOTAL_LOCKERS
+from start_server import cleanup
 from PIL import Image, ImageTk
-import time
 
 button_map = {}
 
@@ -53,12 +54,12 @@ def open_all_lockers_ui(root):
         for locker_number in relay_pins.keys():
             update_button(locker_number, False)
 
-def start_ui():
-    def on_closing():
-        root.destroy()
-        GPIO.cleanup()
-        print("UI cerrada correctamente")
+def on_closing():
+    cleanup()
+    root.destroy()
+    print("UI cerrada correctamente.")
 
+def start_ui():
     root = tk.Tk()
     root.title("Apertura manual de casilleros - Teikit")
     root.configure(bg='#f54c09')
@@ -133,5 +134,6 @@ def start_ui():
 
     root.mainloop()
 
-if __name__ == "__main__":
-    start_ui()
+# Iniciar la UI en un hilo separado
+ui_thread = Thread(target=setup_ui, daemon=True)
+ui_thread.start()

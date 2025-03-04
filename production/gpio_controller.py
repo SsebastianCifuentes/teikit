@@ -1,6 +1,8 @@
 # gpio_controller.py
 import RPi.GPIO as GPIO
 import time
+import time
+from threading import Thread
 
 # Configuración única de GPIO
 GPIO.setmode(GPIO.BOARD)
@@ -28,9 +30,6 @@ def turn_off_locker(locker_number):
     if pin:
         GPIO.output(pin, GPIO.LOW)
 
-from threading import Thread
-import time
-
 def open_all_lockers_api():
     def open_and_close_locker(locker_number, delay):
         try:
@@ -56,3 +55,7 @@ def open_all_lockers_api():
 
     except Exception as e:
         print(f"Error al abrir todos los casilleros: {e}")
+        
+def cleanup_gpio():
+    GPIO.cleanup()
+    print("GPIO limpiado correctamente.")
