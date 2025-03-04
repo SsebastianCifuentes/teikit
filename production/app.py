@@ -5,6 +5,7 @@ from signal import signal, SIGINT
 from ui import open_locker_ui
 from gpio_controller import TOTAL_LOCKERS, open_all_lockers_api
 from config import API_TOKEN
+from cleanup import cleanup
 from threading import Thread
 import time
 
