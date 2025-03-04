@@ -7,18 +7,18 @@ def start_flask():
     return subprocess.Popen(["gunicorn", "-w", "1", "-b", "0.0.0.0:5000", "--preload", "app:app"])
 
 def start_ngrok():
-    time.sleep(2)  # Esperar a que Flask inicie
+    time.sleep(5)
     return subprocess.Popen(["ngrok", "http", "--url", "nicely-valued-chimp.ngrok-free.app", "5000"])
 
 def start_ui():
-    time.sleep(3)  # Esperar a que Ngrok y Flask estén listos
-    return subprocess.Popen(["python", "ui.py"])
+    time.sleep(7)
+    with open("ui.log", "w") as log_file:
+        return subprocess.Popen(["python", "ui.py"], stdout=log_file, stderr=log_file)
 
 def signal_handler(sig, frame):
     for p in [flask_process, ngrok_process, ui_process]:
         if p:
             p.terminate()
-            p.wait()  # Esperar a que termine
     sys.exit(0)
 
 if __name__ == "__main__":
@@ -29,6 +29,7 @@ if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)
     
     try:
-        while True: time.sleep(1)
+        while True: 
+            time.sleep(1)
     except KeyboardInterrupt:
         signal_handler(None, None)

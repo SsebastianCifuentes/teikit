@@ -30,8 +30,6 @@ def open_all_lockers_ui():
     thread.start()
 
 def start_ui():
-    if hasattr(tk, '_default_root'):  # Verificar si ya hay una instancia
-        return
     def on_closing():
         root.destroy()  # Cierra la ventana
         GPIO.cleanup()  # Limpia GPIO
