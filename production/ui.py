@@ -4,6 +4,7 @@ import RPi.GPIO as GPIO
 import time
 from threading import Thread
 from gpio_controller import turn_on_locker, turn_off_locker, relay_pins, TOTAL_LOCKERS
+from cleanup import cleanup
 from PIL import Image, ImageTk
 
 button_map = {}
