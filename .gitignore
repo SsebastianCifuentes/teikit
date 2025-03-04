@@ -1,5 +1,5 @@
 # Ignorar el archivo de entorno
-/production/.env
+/production/src/.env
 
 # Ignorar cache
-/production/__pycache__/
+/production/src/__pycache__/
