@@ -8,7 +8,6 @@ from config import API_TOKEN
 from threading import Thread
 import time
 
-# Configuración de la API Flask
 app = Flask(__name__)
 
 @app.before_request
