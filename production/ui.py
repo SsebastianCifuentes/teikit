@@ -31,13 +31,13 @@ def open_all_lockers_ui(root):
 
     def open_locker(locker_number, delay):
         """Abre un casillero después de un retraso."""
-        root.after(int(delay * 1000), lambda: turn_on_locker(locker_number))
-        root.after(int(delay * 1000), lambda: update_button(locker_number, True))
+        root.after(int(delay), lambda: turn_on_locker(locker_number))
+        root.after(int(delay), lambda: update_button(locker_number, True))
 
     def close_locker(locker_number, delay):
         """Cierra un casillero después de un retraso."""
-        root.after(int(delay * 1000), lambda: turn_off_locker(locker_number))
-        root.after(int(delay * 1000), lambda: update_button(locker_number, False))
+        root.after(int(delay), lambda: turn_off_locker(locker_number))
+        root.after(int(delay), lambda: update_button(locker_number, False))
 
     try:
         # Abrir casilleros con retrasos progresivos
