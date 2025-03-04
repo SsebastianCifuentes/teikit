@@ -23,9 +23,25 @@ def open_locker_ui(locker_number, button=None):
     thread.start()
 
 def open_all_lockers_ui(root):
+    def update_button(locker_number, state):
+        button = button_map[locker_number]
+        color = "green" if state else "white"
+        button.config(bg=color, fg="#000000" if not state else "white")
+        root.update_idletasks()
+
     def task():
-        root.after(0, lambda: open_all_lockers()) 
-    
+        for locker_number in relay_pins.keys():
+            root.after(0, update_button, locker_number, True)
+            turn_on_locker(locker_number)
+            time.sleep(0.1)  
+
+        time.sleep(2) 
+
+        for locker_number in relay_pins.keys():
+            turn_off_locker(locker_number)
+            root.after(0, update_button, locker_number, False)
+            time.sleep(0.1)
+
     thread = Thread(target=task, daemon=True)
     thread.start()
 
