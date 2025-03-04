@@ -67,7 +67,7 @@ def start_ui():
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
     root.geometry(f"{screen_width}x{screen_height}+0+0")
-    root.overrideredirect(False)
+    root.overrideredirect(True)
     root.protocol("WM_DELETE_WINDOW", on_closing)
 
     top_frame = tk.Frame(root, bg='#f54c09')
