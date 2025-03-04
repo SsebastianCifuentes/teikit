@@ -28,14 +28,13 @@ def open_all_lockers_ui(root):
         color = "green" if state else "white"
         button.config(bg=color, fg="#000000" if not state else "white")
         root.update_idletasks()
-        
+
     try:
         # Abrir casilleros con retrasos progresivos
         for locker_number, delay in zip(relay_pins.keys(), [i * 0.5 for i in range(TOTAL_LOCKERS)]):
             time.sleep(delay) 
             root.after(0, update_button, locker_number, True) 
             turn_on_locker(locker_number)  # Abrir físicamente
-            print(f"Casillero {locker_number} abierto a los {delay}s") 
 
         # Mantener todos los casilleros abiertos durante 2 segundos
         time.sleep(2)
@@ -45,7 +44,6 @@ def open_all_lockers_ui(root):
             time.sleep(delay)
             turn_off_locker(locker_number)
             root.after(0, update_button, locker_number, False) 
-            print(f"Casillero {locker_number} cerrado a los {delay}s")
 
     except Exception as e:
         print(f"Error en la tarea: {e}")
@@ -68,7 +66,7 @@ def start_ui():
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
     root.geometry(f"{screen_width}x{screen_height}+0+0")
-    root.overrideredirect(True)
+    root.overrideredirect(False)
     root.protocol("WM_DELETE_WINDOW", on_closing)
 
     top_frame = tk.Frame(root, bg='#f54c09')
