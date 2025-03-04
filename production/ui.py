@@ -4,7 +4,6 @@ import RPi.GPIO as GPIO
 import time
 from threading import Thread
 from gpio_controller import turn_on_locker, turn_off_locker, relay_pins, TOTAL_LOCKERS
-from start_server import cleanup
 from PIL import Image, ImageTk
 
 button_map = {}
@@ -55,7 +54,7 @@ def open_all_lockers_ui(root):
             update_button(locker_number, False)
 
 def on_closing():
-    cleanup()
+    cleanup()  # Llama a la función cleanup desde cleanup.py
     root.destroy()
     print("UI cerrada correctamente.")
 
@@ -133,7 +132,3 @@ def start_ui():
         bottom_frame.grid_columnconfigure(j, weight=1)
 
     root.mainloop()
-
-# Iniciar la UI en un hilo separado
-ui_thread = Thread(target=setup_ui, daemon=True)
-ui_thread.start()

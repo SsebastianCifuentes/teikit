@@ -55,7 +55,3 @@ def open_all_lockers_api():
 
     except Exception as e:
         print(f"Error al abrir todos los casilleros: {e}")
-        
-def cleanup_gpio():
-    GPIO.cleanup()
-    print("GPIO limpiado correctamente.")

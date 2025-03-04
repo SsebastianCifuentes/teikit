@@ -1,57 +1,39 @@
-#start_server.py
+# start_server.py
 import subprocess
 import time
-import sys
 from threading import Thread
 from ui import start_ui
-from gpio_controller import cleanup_gpio
-
-# Variables globales para los procesos
-flask_process = None
-ngrok_process = None
+from cleanup import set_processes
 
 def start_flask():
-    global flask_process
+    """Inicia el servidor Flask usando Gunicorn."""
     flask_process = subprocess.Popen([
         "gunicorn", 
-        "-w", "1",
+        "-w", "1",  # Un solo worker para evitar problemas con GPIO
         "-b", "0.0.0.0:5000", 
         "--preload", 
         "app:app"
     ])
+    return flask_process
 
 def start_ngrok():
-    global ngrok_process
-    time.sleep(3)
+    """Inicia Ngrok para acceso remoto."""
+    time.sleep(3)  # Esperar que Flask esté listo
     ngrok_process = subprocess.Popen([
         "ngrok", 
         "http", 
         "--url", "nicely-valued-chimp.ngrok-free.app", 
         "5000"
     ])
-
-def cleanup():
-    print("Cerrando aplicación...")
-    
-    if ngrok_process:
-        ngrok_process.terminate()
-        try:
-            ngrok_process.wait(timeout=5) 
-        except subprocess.TimeoutExpired:
-            ngrok_process.kill() 
-    
-    if flask_process:
-        flask_process.terminate()
-        try:
-            flask_process.wait(timeout=5)
-        except subprocess.TimeoutExpired:
-            flask_process.kill()
-    
-    cleanup_gpio()
-    print("Aplicación cerrada correctamente.")
-    sys.exit(0)
+    return ngrok_process
 
 if __name__ == "__main__":
-    start_flask()
-    start_ngrok()
+    # Iniciar Flask y Ngrok
+    flask_process = start_flask()
+    ngrok_process = start_ngrok()
+    
+    # Establecer las referencias a los procesos en cleanup.py
+    set_processes(flask_process, ngrok_process)
+    
+    # Iniciar la interfaz gráfica
     start_ui()
