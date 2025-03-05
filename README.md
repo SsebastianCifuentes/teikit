@@ -1,48 +1,169 @@
 # Teikit Casilleros
 
-Un entorno virtual es una herramienta que te permite crear un espacio aislado para instalar y gestionar dependencias (paquetes de Python) necesarias para un proyecto específico.
+## Descripción
 
-Importante instalar ngrok via apt y no ngrok 
-curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc \
-  | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null \
-  && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" \
-  | sudo tee /etc/apt/sources.list.d/ngrok.list \
-  && sudo apt update \
-  && sudo apt install ngrok
+Teikit Casilleros es un sistema que permite la apertura de casilleros de manera automatizada mediante un servidor, una interfaz de usuario (UI) y una integración con **ngrok** para accesibilidad remota. Este documento describe los pasos para la instalación, configuración y ejecución del servicio.
 
-y luego configurar el token
-ngrok config add-authtoken <token>
+---
 
-Lo primero es dirigirse a la ruta en donde esta ubicado el directorio de trabajo
+## Tabla de Contenidos
+
+- [Requisitos](#requisitos)  
+- [Instalación](#instalación)  
+- [Configuración de ngrok](#configuración-de-ngrok)  
+- [Configuración del entorno](#configuración-del-entorno)  
+- [Uso](#uso)  
+  - [Activar el entorno virtual](#activar-el-entorno-virtual)  
+  - [Ejecutar el programa](#ejecutar-el-programa)  
+  - [Desactivar el entorno virtual](#desactivar-el-entorno-virtual)  
+- [Automatización con systemd](#automatización-con-systemd)  
+  - [Crear el servicio](#crear-el-servicio)  
+  - [Gestión del servicio](#gestión-del-servicio)  
+- [Logs y Diagnóstico](#logs-y-diagnóstico)  
+- [Interfaz de Usuario](#interfaz-de-usuario)  
+
+---
+
+## Requisitos
+
+Antes de comenzar, asegúrate de tener instalado:
+
+- **Python 3**  
+- **ngrok** (instalado correctamente, ver instrucciones más abajo)  
+- **systemd** (para la automatización del servicio)  
+
+---
+
+## Instalación
+
+### 1️⃣ Instalar ngrok
+
+Ejecuta el siguiente comando para instalar **ngrok** correctamente:
+
+```bash
+curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc   | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null   && echo "deb https://ngrok-agent.s3.amazonaws.com buster main"   | sudo tee /etc/apt/sources.list.d/ngrok.list   && sudo apt update   && sudo apt install ngrok
 ```
+
+### 2️⃣ Crear y activar un entorno virtual
+
+Dirígete a la carpeta donde deseas crear el entorno virtual y ejecuta:
+
+```bash
+python3 -m venv teikit-env
+```
+
+Luego, actívalo con:
+
+```bash
+source teikit-env/bin/activate
+```
+
+### 3️⃣ Instalar dependencias
+
+Dentro del entorno virtual, instala las dependencias necesarias:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## Configuración de ngrok
+
+Luego de la instalación, es necesario configurar el token de autenticación:
+
+```bash
+ngrok config add-authtoken <TOKEN>
+```
+
+Reemplaza `<TOKEN>` con tu clave de autenticación de **ngrok**.
+
+---
+
+## Configuración del entorno
+
+Debes crear un archivo **.env** dentro del proyecto con las siguientes variables:
+
+```bash
+nano .env
+```
+
+Agrega el siguiente contenido:
+
+```
+API_TOKEN=<TOKEN_BACKEND>
+EXTERNAL_API=<URL_API_EXTERNA>
+```
+
+📌 **Explicación**  
+- `API_TOKEN`: Token compartido con el backend para apertura remota.  
+- `EXTERNAL_API`: Reservado para futuras integraciones con el backend.  
+
+Guarda los cambios (`CTRL + X`, luego `Y` y `ENTER`).
+
+---
+
+## Uso
+
+### Activar el entorno virtual
+
+Dirígete al directorio de trabajo:
+
+```bash
 cd Desktop/Teikit/teikit-env
 ```
 
-Una vez ahí, se debe activar el entorno virtual
-```
+Activa el entorno virtual:
+
+```bash
 source bin/activate
 ```
 
-Luego es dirirse a la carpeta en donde se encuentra el archivo ejecutable
-```
+### Ejecutar el programa
+
+Navega hasta la carpeta donde se encuentra el ejecutable:
+
+```bash
 cd ../production/src
 ```
 
-Ejecutamos el programa para la apertura de casilleros
-```
+Ejecuta el programa para la apertura de casilleros:
+
+```bash
 python3 start_server.py
 ```
-Este programa incluye el servidor gunicorn, ngrok y UI para el usuario de la cafeteria en simultaneo.
 
-Para desactivar el entorno virtual
-```
+Este programa iniciará:
+
+- **Gunicorn** (servidor WSGI para ejecutar aplicaciones web)  
+- **ngrok** (para accesibilidad remota)  
+- **UI** (interfaz de usuario para la cafetería)  
+
+### Desactivar el entorno virtual
+
+Cuando hayas terminado, desactiva el entorno virtual con:
+
+```bash
 deactivate
 ```
 
-Para automatizar el servicio por primera vez se debe
+---
 
+## Automatización con systemd
+
+Este proceso permite que el sistema se inicie automáticamente cuando la Raspberry Pi se encienda y que el servicio se reinicie si se cierra.
+
+### Crear el servicio
+
+Edita o crea el archivo de servicio en **systemd**:
+
+```bash
 sudo nano /etc/systemd/system/teikit.service
+```
 
+Agrega el siguiente contenido:
+
+```
 [Unit]
 Description=Ejecutar Teikit Casilleros al conectarse a internet
 After=network-online.target
@@ -58,36 +179,84 @@ Environment="PATH=/home/teikit/Desktop/Teikit/teikit-env/bin:/usr/local/sbin:/us
 
 [Install]
 WantedBy=multi-user.target
+```
 
-# Habilitar el servicio para que se ejecute al inicio
+Guarda los cambios y cierra el archivo.
+
+### Gestión del servicio
+
+Habilita el servicio para que se ejecute automáticamente al inicio:
+
+```bash
 sudo systemctl enable teikit.service
+```
 
-# Iniciar el servicio
+Inicia el servicio:
+
+```bash
 sudo systemctl start teikit.service
+```
 
-# Ver el estado del servicio
+Verifica su estado:
+
+```bash
 sudo systemctl status teikit.service
+```
 
-# Revisar los logs del servicio
-sudo journalctl -u teikit.service
+Si necesitas detener el servicio:
 
-# Detener el servicio
+```bash
 sudo systemctl stop teikit.service
+```
 
-# Reiniciar el servicio
+Para reiniciarlo:
+
+```bash
 sudo systemctl restart teikit.service
+```
 
-# Deshabilitar el servicio para que no se ejecute al inicio
+Si quieres deshabilitar el servicio para que no se inicie automáticamente:
+
+```bash
 sudo systemctl disable teikit.service
+```
 
-# Ver si el servicio está habilitado para el inicio automático
+✅ **Una vez configurado, el script se ejecutará automáticamente cada vez que la Raspberry Pi se inicie y, si se cierra, se volverá a abrir indefinidamente.**
+
+---
+
+## Logs y Diagnóstico
+
+Verifica si el servicio está habilitado para inicio automático:
+
+```bash
 sudo systemctl is-enabled teikit.service
+```
 
-# Recargar la configuración de systemd después de hacer cambios
+Recarga la configuración de **systemd** después de realizar cambios:
+
+```bash
 sudo systemctl daemon-reload
+```
 
-# Ver el estado del servicio con más detalles
+Consulta el estado detallado del servicio:
+
+```bash
 sudo systemctl status teikit.service -l
+```
 
-# Seguir viendo los logs en tiempo real
+Para ver los logs en tiempo real:
+
+```bash
 sudo journalctl -f -u teikit.service
+```
+
+---
+
+## Interfaz de Usuario
+
+Aquí puedes ver la interfaz de usuario utilizada en la cafetería:
+
+![UI Cafetería](production/assets/UI_CAFETERIA.png)
+
+---
