@@ -59,11 +59,35 @@ Environment="PATH=/home/teikit/Desktop/Teikit/teikit-env/bin:/usr/local/sbin:/us
 [Install]
 WantedBy=multi-user.target
 
-habilitarlo para que se ejecute en inicio
+# Habilitar el servicio para que se ejecute al inicio
 sudo systemctl enable teikit.service
-para probarlo usar
+
+# Iniciar el servicio
 sudo systemctl start teikit.service
-para ver status
+
+# Ver el estado del servicio
 sudo systemctl status teikit.service
-para revisar logs (importante)
+
+# Revisar los logs del servicio
 sudo journalctl -u teikit.service
+
+# Detener el servicio
+sudo systemctl stop teikit.service
+
+# Reiniciar el servicio
+sudo systemctl restart teikit.service
+
+# Deshabilitar el servicio para que no se ejecute al inicio
+sudo systemctl disable teikit.service
+
+# Ver si el servicio está habilitado para el inicio automático
+sudo systemctl is-enabled teikit.service
+
+# Recargar la configuración de systemd después de hacer cambios
+sudo systemctl daemon-reload
+
+# Ver el estado del servicio con más detalles
+sudo systemctl status teikit.service -l
+
+# Seguir viendo los logs en tiempo real
+sudo journalctl -f -u teikit.service
