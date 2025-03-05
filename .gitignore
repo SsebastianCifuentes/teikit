@@ -5,6 +5,7 @@
 # Ignorar cache
 /production/__pycache__/
 /production/src/__pycache__/
+/development/__pycache__/
 
 # Ignorar el entorno virtual
 teikit-casillero/
