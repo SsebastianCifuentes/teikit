@@ -2,4 +2,4 @@
 /production/src/.env
 
 # Ignorar cache
-/production/src/__pycache__/
+/production/__pycache__/
