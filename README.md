@@ -15,7 +15,7 @@ ngrok config add-authtoken <token>
 
 Lo primero es dirigirse a la ruta en donde esta ubicado el directorio de trabajo
 ```
-cd Desktop/Teikit/teikit-casillero
+cd Desktop/Teikit/teikit-env
 ```
 
 Una vez ahí, se debe activar el entorno virtual
@@ -50,11 +50,11 @@ Wants=network-online.target
 
 [Service]
 ExecStart=/bin/bash /home/teikit/Desktop/Teikit/start_teikit.sh
-WorkingDirectory=/home/teikit/Desktop/Teikit/teikit-casillero
+WorkingDirectory=/home/teikit/Desktop/Teikit/teikit-env
 Restart=always
 User=teikit
 Environment="DISPLAY=:0"
-Environment="PATH=/home/teikit/Desktop/Teikit/teikit-casillero/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+Environment="PATH=/home/teikit/Desktop/Teikit/teikit-env/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 [Install]
 WantedBy=multi-user.target
