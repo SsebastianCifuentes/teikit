@@ -3,3 +3,4 @@
 
 # Ignorar cache
 /production/__pycache__/
+/production/src/__pycache__/
