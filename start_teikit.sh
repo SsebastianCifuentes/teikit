@@ -16,7 +16,7 @@ done
 echo "Conexión a internet detectada. Iniciando Teikit Casilleros..."
 
 # Navega a la carpeta del proyecto
-cd /home/teikit/Desktop/Teikit/teikit-casillero
+cd /home/teikit/Desktop/Teikit/teikit-env
 
 # Activa el entorno virtual
 source bin/activate
