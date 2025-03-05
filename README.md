@@ -1,29 +1,29 @@
-# Teikit electronica
+# Teikit Casilleros
 
 Un entorno virtual es una herramienta que te permite crear un espacio aislado para instalar y gestionar dependencias (paquetes de Python) necesarias para un proyecto específico.
 
 Lo primero es dirigirse a la ruta en donde esta ubicado el directorio de trabajo
 ```
-cd /Desktop/Teikit
+cd Desktop/Teikit/teikit-casillero
 ```
 
 Una vez ahí, se debe activar el entorno virtual
 ```
-source teikit-casillero/bin/activate
+source bin/activate
 ```
 
-Para desactivar el entorno virtual (por si acaso)
+Luego es dirirse a la carpeta en donde se encuentra el archivo ejecutable
+```
+cd ../production/src
+```
+
+Ejecutamos el programa para la apertura de casilleros
+```
+python3 start_server.py
+```
+Este programa incluye el servidor gunicorn, ngrok y UI para el usuario de la cafeteria en simultaneo.
+
+Para desactivar el entorno virtual
 ```
 deactivate
-```
-
-Ejecutamos el servidor Flask para la apertura de casilleros
-```
-python3 main.py
-```
-Esto permite que la API empiece a escuchar mediante la direccion 192.168.0.100:50000
-
-Luego se debe activar el tunel ngrok, el cual asigna un dominio publico para acceder al servidor Flask desde cualquier lugar (Abrir en otra terminal)
-```
-ngrok http --url nicely-valued-chimp.ngrok-free.app 5000
 ```
