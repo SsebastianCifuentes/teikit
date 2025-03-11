@@ -9,7 +9,7 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
 
 relay_pins = {
-    1: 26, 2: 24, 3: 22, 4: 18, 5: 16, 6: 15, 7: 12, 8: 7,
+    1: 12, 2: 16, 3: 22, 4: 26, 5: 7, 6: 15, 7: 18, 8: 24,
 }
 
 TOTAL_LOCKERS = len(relay_pins)
