@@ -16,7 +16,7 @@ TOTAL_LOCKERS = len(relay_pins)
 
 # Inicializar pines solo una vez
 for pin in relay_pins.values():
-    
+    GPIO.setup(pin, GPIO.OUT)
     GPIO.output(pin, GPIO.HIGH)
 
 def turn_on_locker(locker_number):
