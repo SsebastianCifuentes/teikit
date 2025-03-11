@@ -9,14 +9,14 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
 
 relay_pins = {
-    1: 12, 2: 16, 3: 22, 4: 26, 5: 7, 6: 15, 7: 18, 8: 24,
+    1: 18, 2: 7, 3: 22, 4: 12, 5: 24, 6: 15, 7: 26, 8: 16,
 }
 
 TOTAL_LOCKERS = len(relay_pins)
 
 # Inicializar pines solo una vez
 for pin in relay_pins.values():
-    GPIO.setup(pin, GPIO.OUT)
+    
     GPIO.output(pin, GPIO.HIGH)
 
 def turn_on_locker(locker_number):
